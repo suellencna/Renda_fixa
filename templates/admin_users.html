@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Usuários - Investir é Realizar{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Usuários cadastrados</h2>
+    <p class="page-subtitle">Registro de acessos, e-mails e aceite do disclaimer.</p>
+</div>
+
+<div class="admin-users-card">
+    <div class="admin-actions">
+        <a href="{{ url_for('main.admin_export_users') }}" class="btn btn-secondary">Exportar CSV</a>
+    </div>
+    <div class="table-responsive">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Data de cadastro</th>
+                    <th>Último acesso</th>
+                    <th>Aceite do disclaimer</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.name or '—' }}</td>
+                    <td>{{ user.email or '—' }}</td>
+                    <td>{{ user.created_at.strftime('%d/%m/%Y %H:%M') if user.created_at else '—' }}</td>
+                    <td>{{ user.last_access.strftime('%d/%m/%Y %H:%M') if user.last_access else '—' }}</td>
+                    <td>
+                        {% if user.disclaimer_accepted_at %}
+                            {{ user.disclaimer_accepted_at.strftime('%d/%m/%Y %H:%M') }}
+                        {% else %}
+                            <span class="badge badge-warning">Pendente</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="post" action="{{ url_for('main.admin_reset_user_disclaimer', user_id=user.id) }}">
+                            <button type="submit" class="btn btn-link">Resetar aceite</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.admin-users-card {
+    background: var(--color-surface);
+    padding: 2rem;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 51, 160, 0.08);
+    box-shadow: var(--shadow-card);
+}
+
+.admin-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 0.85rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 51, 160, 0.08);
+}
+
+.admin-table th {
+    background: var(--color-title);
+    color: #fff;
+}
+
+.badge-warning {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+    background: #ffd300;
+    color: #0033a0;
+    font-weight: 600;
+}
+
+.btn-link {
+    border: none;
+    background: transparent;
+    color: var(--color-link);
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+}
+</style>
+{% endblock %}
+

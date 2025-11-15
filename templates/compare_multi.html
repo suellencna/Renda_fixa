@@ -1,0 +1,540 @@
+{% extends "base.html" %}
+
+{% block title %}Compare até 5 ativos - Comparador de Renda Fixa{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Compare até 5 ativos</h2>
+    <p class="page-subtitle">Mostre quanto tem, por quanto tempo quer investir e descobriremos, passo a passo, as melhores opções.</p>
+</div>
+
+<div class="comparison-container">
+    <!-- Investimento Principal -->
+    <div class="investment-card main-investment" data-tour-step="1" data-tour-text="Conte tudo sobre o seu investimento principal: tipo, taxa e prazo. Ele será comparado com as demais alternativas.">
+        <h3 class="card-title">Investimento Principal</h3>
+        <form class="investment-form" id="form-main" data-investment="main">
+            <div class="form-group">
+                <label for="type_main" class="form-label">Tipo de Investimento
+                    <button type="button" class="help-icon" data-help="Escolha o produto que você já tem ou planeja contratar.">?</button>
+                </label>
+                <select id="type_main" name="investimento_type" class="form-select" required>
+                    <option value="">Selecione...</option>
+                    <option value="cdb">CDB (Certificado de Depósito Bancário)</option>
+                    <option value="lci">LCI (Letra de Crédito Imobiliário)</option>
+                    <option value="lca">LCA (Letra de Crédito do Agronegócio)</option>
+                    <option value="tesouro_selic">Tesouro Selic</option>
+                    <option value="tesouro_ipca">Tesouro IPCA+</option>
+                    <option value="tesouro_prefixado">Tesouro Prefixado</option>
+                    <option value="fundo_di">Fundo DI</option>
+                    <option value="debenture">Debênture (com IR)</option>
+                    <option value="debenture_incentivada">Debênture Incentivada (isenta)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="rent_type_main" class="form-label">Tipo de Rentabilidade
+                    <button type="button" class="help-icon" data-help="Pré-fixado = juros fixos. % do CDI = acompanha a taxa do CDI. IPCA+ = inflação + juro fixo.">?</button>
+                </label>
+                <select id="rent_type_main" name="rentabilidade_type" class="form-select" required>
+                    <option value="">Selecione...</option>
+                    <option value="prefixado">Pré-fixado (% a.a.)</option>
+                    <option value="cdi">% do CDI</option>
+                    <option value="ipca_mais">IPCA + %</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="rent_value_main" class="form-label">Rentabilidade
+                    <button type="button" class="help-icon" data-help="Informe a taxa prometida. Ex.: 12 significa 12% ao ano ou 105 para 105% do CDI.">?</button>
+                </label>
+                <input type="number" id="rent_value_main" name="rentabilidade_value" class="form-input" step="0.01" min="0" placeholder="Ex: 10.5" required>
+            </div>
+
+            <div class="form-group">
+                <label for="valor_inicial_main" class="form-label">Valor Inicial (R$)
+                    <button type="button" class="help-icon" data-help="Quantia que você já tem disponível para aplicar agora.">?</button>
+                </label>
+                <input type="number" id="valor_inicial_main" name="valor_inicial" class="form-input" step="0.01" min="0" placeholder="Ex: 10000" required>
+            </div>
+
+            <div class="form-group">
+                <label for="aportes_main" class="form-label">Aportes Mensais (R$) <span class="optional">(opcional)</span>
+                    <button type="button" class="help-icon" data-help="Valor que você pretende adicionar mês a mês. Pode ser zero.">?</button>
+                </label>
+                <input type="number" id="aportes_main" name="aportes_mensais" class="form-input" step="0.01" min="0" placeholder="Ex: 500" value="0">
+            </div>
+
+            <div class="form-group">
+                <label for="meses_main" class="form-label">Prazo (meses)
+                    <button type="button" class="help-icon" data-help="Por quantos meses o dinheiro ficará investido.">?</button>
+                </label>
+                <input type="number" id="meses_main" name="meses" class="form-input" min="1" placeholder="Ex: 12" required>
+            </div>
+        </form>
+    </div>
+
+    <!-- Investimentos para Comparar -->
+    <div class="comparison-section" data-tour-step="2" data-tour-text="Adicione até cinco alternativas para confrontar com o investimento principal. Você pode remover um card a qualquer momento.">
+        <h3 class="section-title">Investimentos para Comparar</h3>
+        <div id="investments-container">
+            <!-- Investimentos serão adicionados dinamicamente aqui -->
+        </div>
+        <button type="button" id="btn-add-investment" class="btn btn-outline-accent">+ Adicionar investimento</button>
+        <small class="form-help">Você pode adicionar até 5 investimentos para comparação</small>
+    </div>
+
+    <!-- Opções de Cálculo -->
+    <div class="calculation-options">
+        <h3>Opções de Cálculo</h3>
+        <div class="form-subgroup">
+            <span class="form-label">Regra de Tributação</span>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="tax_regime_multi" value="2025" checked>
+                    <span>Regra vigente (até DEZ/2025)</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="tax_regime_multi" value="2026">
+                    <span>Regra a partir JAN/2026 (MP 1.303/2025)</span>
+                </label>
+            </div>
+        </div>
+        <div class="options-grid">
+            <label class="checkbox-label">
+                <input type="checkbox" id="incluir_ir_multi" checked>
+                <span>Incluir impostos (IR)</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="ajustar_inflacao_multi" checked>
+                <span>Ajustar pela inflação (IPCA)</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Botão Calcular -->
+    <div class="calculate-button-container">
+        <button id="btn-calcular-multi" class="btn btn-primary btn-large">Calcular Comparação</button>
+    </div>
+
+    <!-- Resultados -->
+    <div id="results-container-multi" class="results-container" style="display: none;" data-tour-step="3" data-tour-text="Tabela e gráfico mostram, de forma limpa, quem rende mais após impostos e inflação.">
+        <h3 class="results-title">Resultados da Comparação</h3>
+        <div class="results-table-container">
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Investimento</th>
+                        <th>Total Investido</th>
+                        <th>Valor Bruto</th>
+                        <th>Valor Líquido</th>
+                        <th>Rentabilidade Líquida</th>
+                        <th>Ganho Líquido</th>
+                        <th>Ganho Real</th>
+                    </tr>
+                </thead>
+                <tbody id="results-table-body">
+                    <!-- Resultados serão inseridos aqui -->
+                </tbody>
+            </table>
+        </div>
+        <div id="chart-container" style="margin-top: 2rem;">
+            <canvas id="comparison-chart"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script>
+let investmentCounter = 0;
+const maxInvestments = 5;
+
+// Template HTML para novo investimento
+function criarTemplateInvestimento(id) {
+    return `
+        <div class="investment-card" data-investment-id="${id}">
+            <div class="card-header">
+                <h4 class="card-title-small">Investimento ${id}</h4>
+                <button type="button" class="btn-remove" onclick="removerInvestimento(${id})">×</button>
+            </div>
+            <form class="investment-form" data-investment="${id}">
+                <div class="form-group">
+                    <label for="type_${id}" class="form-label">Tipo de Investimento
+                        <button type="button" class="help-icon" data-help="Selecione o produto que você quer comparar com o principal.">?</button>
+                    </label>
+                    <select id="type_${id}" name="investimento_type" class="form-select" required>
+                        <option value="">Selecione...</option>
+                        <option value="cdb">CDB</option>
+                        <option value="lci">LCI</option>
+                        <option value="lca">LCA</option>
+                        <option value="tesouro_selic">Tesouro Selic</option>
+                        <option value="tesouro_ipca">Tesouro IPCA+</option>
+                        <option value="tesouro_prefixado">Tesouro Prefixado</option>
+                        <option value="fundo_di">Fundo DI</option>
+                        <option value="debenture">Debênture (com IR)</option>
+                        <option value="debenture_incentivada">Debênture Incentivada (isenta)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="rent_type_${id}" class="form-label">Tipo de Rentabilidade
+                        <button type="button" class="help-icon" data-help="Escolha se essa opção rende juros fixos, um percentual do CDI ou IPCA + juro.">?</button>
+                    </label>
+                    <select id="rent_type_${id}" name="rentabilidade_type" class="form-select" required>
+                        <option value="">Selecione...</option>
+                        <option value="prefixado">Pré-fixado (% a.a.)</option>
+                        <option value="cdi">% do CDI</option>
+                        <option value="ipca_mais">IPCA + %</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="rent_value_${id}" class="form-label">Rentabilidade
+                        <button type="button" class="help-icon" data-help="Digite a taxa informada pela instituição.">?</button>
+                    </label>
+                    <input type="number" id="rent_value_${id}" name="rentabilidade_value" class="form-input" step="0.01" min="0" placeholder="Ex: 10.5" required>
+                </div>
+                <div class="form-group">
+                    <label for="valor_inicial_${id}" class="form-label">Valor Inicial (R$)
+                        <button type="button" class="help-icon" data-help="Quanto desse investimento alternativo você pretende aplicar hoje.">?</button>
+                    </label>
+                    <input type="number" id="valor_inicial_${id}" name="valor_inicial" class="form-input" step="0.01" min="0" placeholder="Ex: 10000" required>
+                </div>
+                <div class="form-group">
+                    <label for="aportes_${id}" class="form-label">Aportes Mensais (R$) <span class="optional">(opcional)</span>
+                        <button type="button" class="help-icon" data-help="Quanto você pretende acrescentar mês a mês nesse investimento.">?</button>
+                    </label>
+                    <input type="number" id="aportes_${id}" name="aportes_mensais" class="form-input" step="0.01" min="0" placeholder="Ex: 500" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="meses_${id}" class="form-label">Prazo (meses)
+                        <button type="button" class="help-icon" data-help="Período planejado para este investimento alternativo.">?</button>
+                    </label>
+                    <input type="number" id="meses_${id}" name="meses" class="form-input" min="1" placeholder="Ex: 12" required>
+                </div>
+            </form>
+        </div>
+    `;
+}
+
+// Adicionar investimento
+document.getElementById('btn-add-investment').addEventListener('click', function() {
+    if (investmentCounter >= maxInvestments) {
+        alert(`Você pode adicionar no máximo ${maxInvestments} investimentos.`);
+        return;
+    }
+    
+    investmentCounter++;
+    const container = document.getElementById('investments-container');
+    container.innerHTML += criarTemplateInvestimento(investmentCounter);
+});
+
+// Remover investimento
+function removerInvestimento(id) {
+    const element = document.querySelector(`[data-investment-id="${id}"]`);
+    if (element) {
+        element.remove();
+        investmentCounter--;
+    }
+}
+
+// Calcular comparação múltipla
+document.getElementById('btn-calcular-multi').addEventListener('click', async function() {
+    const formMain = document.getElementById('form-main');
+    
+    if (!formMain.checkValidity()) {
+        alert('Por favor, preencha todos os campos do investimento principal.');
+        formMain.reportValidity();
+        return;
+    }
+    
+    // Coleta investimentos adicionais
+    const investmentForms = document.querySelectorAll('#investments-container .investment-form');
+    
+    if (investmentForms.length === 0) {
+        alert('Por favor, adicione pelo menos um investimento para comparação.');
+        return;
+    }
+    
+    // Valida todos os formulários
+    let allValid = true;
+    investmentForms.forEach(form => {
+        if (!form.checkValidity()) {
+            allValid = false;
+            form.reportValidity();
+        }
+    });
+    
+    if (!allValid) {
+        alert('Por favor, preencha todos os campos corretamente.');
+        return;
+    }
+    
+    const incluirIR = document.getElementById('incluir_ir_multi').checked;
+    const ajustarInflacao = document.getElementById('ajustar_inflacao_multi').checked;
+    const taxRegimeInput = document.querySelector('input[name="tax_regime_multi"]:checked');
+    const taxRegime = taxRegimeInput ? taxRegimeInput.value : '2025';
+    
+    // Coleta dados do principal
+    const dataMain = {
+        investimento_type: formMain.querySelector('[name="investimento_type"]').value,
+        rentabilidade_type: formMain.querySelector('[name="rentabilidade_type"]').value,
+        rentabilidade_value: parseFloat(formMain.querySelector('[name="rentabilidade_value"]').value),
+        valor_inicial: parseFloat(formMain.querySelector('[name="valor_inicial"]').value),
+        aportes_mensais: parseFloat(formMain.querySelector('[name="aportes_mensais"]').value) || 0,
+        meses: parseInt(formMain.querySelector('[name="meses"]').value),
+        incluir_ir: incluirIR,
+        ajustar_inflacao: ajustarInflacao,
+        tax_regime: taxRegime
+    };
+    
+    // Coleta dados dos outros investimentos
+    const investmentsData = [];
+    investmentForms.forEach((form, index) => {
+        investmentsData.push({
+            investimento_type: form.querySelector('[name="investimento_type"]').value,
+            rentabilidade_type: form.querySelector('[name="rentabilidade_type"]').value,
+            rentabilidade_value: parseFloat(form.querySelector('[name="rentabilidade_value"]').value),
+            valor_inicial: parseFloat(form.querySelector('[name="valor_inicial"]').value),
+            aportes_mensais: parseFloat(form.querySelector('[name="aportes_mensais"]').value) || 0,
+            meses: parseInt(form.querySelector('[name="meses"]').value),
+            incluir_ir: incluirIR,
+            ajustar_inflacao: ajustarInflacao,
+            tax_regime: taxRegime
+        });
+    });
+    
+    // Desabilita botão
+    const btn = document.getElementById('btn-calcular-multi');
+    btn.disabled = true;
+    btn.textContent = 'Calculando...';
+    
+    try {
+        // Calcula todos
+        const calculations = [calcularInvestimento(dataMain)];
+        investmentsData.forEach(data => {
+            calculations.push(calcularInvestimento(data));
+        });
+        
+        const resultados = await Promise.all(calculations);
+        
+        // Exibe resultados
+        exibirResultadosMultiplos(resultados, ['Principal', ...investmentsData.map((_, i) => `Investimento ${i + 1}`)]);
+        
+        // Mostra container
+        document.getElementById('results-container-multi').style.display = 'block';
+        
+        // Scroll para resultados
+        document.getElementById('results-container-multi').scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        alert('Erro ao calcular: ' + error.message);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Calcular Comparação';
+    }
+});
+
+// Exibir resultados múltiplos
+function exibirResultadosMultiplos(resultados, nomes) {
+    const tbody = document.getElementById('results-table-body');
+    tbody.innerHTML = '';
+    
+    resultados.forEach((resultado, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${nomes[index]}</strong></td>
+            <td>${formatarMoeda(resultado.total_investido)}</td>
+            <td>${formatarMoeda(resultado.valor_bruto)}</td>
+            <td>${formatarMoeda(resultado.valor_liquido)}</td>
+            <td>${formatarPorcentagem(resultado.rentabilidade_liquida)}</td>
+            <td>${formatarMoeda(resultado.ganho_liquido)}</td>
+            <td>${formatarMoeda(resultado.ganho_real || 0)}</td>
+        `;
+        tbody.appendChild(row);
+    });
+    
+    // Cria gráfico
+    criarGraficoComparacao(resultados, nomes);
+}
+
+// Criar gráfico de comparação
+function criarGraficoComparacao(resultados, nomes) {
+    const ctx = document.getElementById('comparison-chart');
+    
+    if (window.comparisonChart) {
+        window.comparisonChart.destroy();
+    }
+    
+    window.comparisonChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: nomes,
+            datasets: [{
+                label: 'Ganho Líquido (R$)',
+                data: resultados.map(r => r.ganho_liquido),
+                backgroundColor: '#fbb911',
+                borderColor: '#e0a70d',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true
+                },
+                title: {
+                    display: true,
+                    text: 'Comparação de Ganho Líquido'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return formatarMoeda(value);
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.comparison-section {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: var(--color-bg-light);
+    border-radius: 8px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-text-primary);
+}
+
+#investments-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.card-title-small {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.btn-remove {
+    background: var(--color-error);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.btn-remove:hover {
+    background: #c82333;
+}
+
+.btn-outline-accent {
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    background: transparent;
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-accent:hover {
+    background: var(--color-accent);
+    color: var(--color-title);
+    box-shadow: 0 8px 20px rgba(255, 211, 0, 0.25);
+}
+
+.results-table-container {
+    overflow-x: auto;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.results-table th,
+.results-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.results-table th {
+    background: var(--color-text-primary);
+    color: white;
+    font-weight: 600;
+}
+
+.results-table tr:hover {
+    background: var(--color-bg-light);
+}
+
+#chart-container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.form-subgroup {
+    margin-bottom: 1.5rem;
+}
+
+.radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.75rem;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--color-bg-light);
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+}
+
+.radio-option input[type="radio"] {
+    transform: scale(1.1);
+}
+</style>
+{% endblock %}
+
+
+
+

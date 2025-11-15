@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}Compare 2 ativos - Comparador de Renda Fixa{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Compare 2 ativos</h2>
+    <p class="page-subtitle">Preencha os valores com calma e deixe que mostramos, em português simples, quem rende mais.</p>
+</div>
+
+<div class="comparison-container">
+    <!-- Parâmetros compartilhados -->
+    <div class="shared-parameters" data-tour-step="1" data-tour-text="Comece contando quanto dinheiro você tem hoje, quanto pretende acrescentar por mês e por quanto tempo deseja investir.">
+        <h3 class="section-title">Parâmetros da aplicação</h3>
+        <form id="shared-form" class="shared-form">
+            <div class="shared-grid">
+                <div class="form-group">
+                    <label for="valor_inicial_compartilhado" class="form-label">
+                        Valor inicial (R$)
+                        <button type="button" class="help-icon" data-help="Dinheiro que você já tem pronto para aplicar agora. Ex.: se possui R$ 5.000 guardados, coloque esse valor aqui.">?</button>
+                    </label>
+                    <input type="number" id="valor_inicial_compartilhado" name="valor_inicial_compartilhado" class="form-input" step="0.01" min="0" placeholder="Ex: 10000" required>
+                </div>
+                <div class="form-group">
+                    <label for="aportes_compartilhados" class="form-label">
+                        Aportes mensais (R$) <span class="optional">(opcional)</span>
+                        <button type="button" class="help-icon" data-help="É o valor que você pretende colocar todo mês como se fosse um PIX para você mesmo. Pode deixar zero se não planeja novos depósitos.">?</button>
+                    </label>
+                    <input type="number" id="aportes_compartilhados" name="aportes_compartilhados" class="form-input" step="0.01" min="0" placeholder="Ex: 500" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="prazo_compartilhado" class="form-label">
+                        Prazo (meses)
+                        <button type="button" class="help-icon" data-help="Quantos meses você pretende manter o dinheiro investido sem resgatar. Ex.: 24 meses = 2 anos.">?</button>
+                    </label>
+                    <input type="number" id="prazo_compartilhado" name="prazo_compartilhado" class="form-input" min="1" placeholder="Ex: 12" required>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="comparison-grid-2">
+        <!-- Investimento 1 -->
+        <div class="investment-card" data-tour-step="2" data-tour-text="Escolha o tipo de investimento, a forma como ele rende e a taxa oferecida pela instituição. Faça o mesmo para o outro ativo.">
+            <h3 class="card-title">Investimento 1</h3>
+            <form class="investment-form" data-investment="1">
+                <div class="form-group">
+                    <label for="type1" class="form-label">
+                        Tipo de Investimento
+                        <button type="button" class="help-icon" data-help="Selecione o produto que você quer analisar: CDB, LCI, Tesouro, Fundo etc.">?</button>
+                    </label>
+                    <select id="type1" name="investimento_type" class="form-select" required>
+                        <option value="">Selecione...</option>
+                        <option value="cdb">CDB (Certificado de Depósito Bancário)</option>
+                        <option value="lci">LCI (Letra de Crédito Imobiliário)</option>
+                        <option value="lca">LCA (Letra de Crédito do Agronegócio)</option>
+                        <option value="tesouro_selic">Tesouro Selic</option>
+                        <option value="tesouro_ipca">Tesouro IPCA+</option>
+                        <option value="tesouro_prefixado">Tesouro Prefixado</option>
+                        <option value="fundo_di">Fundo DI</option>
+                        <option value="debenture">Debênture (com IR)</option>
+                        <option value="debenture_incentivada">Debênture Incentivada (isenta)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="rent_type1" class="form-label">Tipo de Rentabilidade
+                        <button type="button" class="help-icon" data-help="Informe se o investimento paga juros fixos (% a.a.), um percentual do CDI ou IPCA + um juro fixo.">?</button>
+                    </label>
+                    <select id="rent_type1" name="rentabilidade_type" class="form-select" required>
+                        <option value="">Selecione...</option>
+                        <option value="prefixado">Pré-fixado (% a.a.)</option>
+                        <option value="cdi">% do CDI</option>
+                        <option value="ipca_mais">IPCA + %</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="rent_value1" class="form-label">Rentabilidade
+                        <button type="button" class="help-icon" data-help="Digite a taxa que o banco informou. Ex.: 110 para 110% do CDI ou 5 para IPCA + 5%.">?</button>
+                    </label>
+                    <input type="number" id="rent_value1" name="rentabilidade_value" class="form-input" step="0.01" min="0" placeholder="Ex: 10.5" required>
+                </div>
+            </form>
+        </div>
+
+        <!-- Investimento 2 -->
+        <div class="investment-card">
+            <h3 class="card-title">Investimento 2</h3>
+            <form class="investment-form" data-investment="2">
+                <div class="form-group">
+                    <label for="type2" class="form-label">Tipo de Investimento
+                        <button type="button" class="help-icon" data-help="Escolha o segundo produto para comparar com o anterior.">?</button>
+                    </label>
+                    <select id="type2" name="investimento_type" class="form-select" required>
+                        <option value="">Selecione...</option>
+                        <option value="cdb">CDB (Certificado de Depósito Bancário)</option>
+                        <option value="lci">LCI (Letra de Crédito Imobiliário)</option>
+                        <option value="lca">LCA (Letra de Crédito do Agronegócio)</option>
+                        <option value="tesouro_selic">Tesouro Selic</option>
+                        <option value="tesouro_ipca">Tesouro IPCA+</option>
+                        <option value="tesouro_prefixado">Tesouro Prefixado</option>
+                        <option value="fundo_di">Fundo DI</option>
+                        <option value="debenture">Debênture (com IR)</option>
+                        <option value="debenture_incentivada">Debênture Incentivada (isenta)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="rent_type2" class="form-label">Tipo de Rentabilidade
+                        <button type="button" class="help-icon" data-help="Conte para nós se a taxa é pré-fixada, % do CDI ou IPCA + juros.">?</button>
+                    </label>
+                    <select id="rent_type2" name="rentabilidade_type" class="form-select" required>
+                        <option value="">Selecione...</option>
+                        <option value="prefixado">Pré-fixado (% a.a.)</option>
+                        <option value="cdi">% do CDI</option>
+                        <option value="ipca_mais">IPCA + %</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="rent_value2" class="form-label">Rentabilidade
+                        <button type="button" class="help-icon" data-help="Use o número informado pela instituição. Ex.: 12 para 12% ao ano ou 8 para IPCA + 8%.">?</button>
+                    </label>
+                    <input type="number" id="rent_value2" name="rentabilidade_value" class="form-input" step="0.01" min="0" placeholder="Ex: 10.5" required>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Opções de Cálculo -->
+    <div class="calculation-options">
+        <h3>Opções de Cálculo</h3>
+        <div class="form-subgroup">
+            <span class="form-label">Regra de Tributação</span>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="tax_regime" value="2025" checked>
+                    <span>Regra vigente (até DEZ/2025)</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="tax_regime" value="2026">
+                    <span>Regra a partir JAN/2026 (MP 1.303/2025)</span>
+                </label>
+            </div>
+        </div>
+        <div class="options-grid">
+            <label class="checkbox-label">
+                <input type="checkbox" id="incluir_ir" checked>
+                <span>Incluir impostos (IR)</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="ajustar_inflacao" checked>
+                <span>Ajustar pela inflação (IPCA)</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Botão Calcular -->
+    <div class="calculate-button-container">
+        <button id="btn-calcular" class="btn btn-primary btn-large">Calcular Comparação</button>
+    </div>
+
+    <!-- Resultados -->
+    <div id="results-container" class="results-container" style="display: none;" data-tour-step="3" data-tour-text="Aqui ficam os resultados: total investido, valor líquido e ganho real. Role para comparar os dois lados.">
+        <h3 class="results-title">Resultados da Comparação</h3>
+        <div class="results-grid-2">
+            <div class="result-card" id="result-1">
+                <h4>Investimento 1</h4>
+                <div class="result-content"></div>
+            </div>
+            <div class="result-card" id="result-2">
+                <h4>Investimento 2</h4>
+                <div class="result-content"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Lógica de cálculo em tempo real será implementada em main.js
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.form-subgroup {
+    margin-bottom: 1.5rem;
+}
+
+.radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.75rem;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--color-bg-light);
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+}
+
+.radio-option input[type="radio"] {
+    transform: scale(1.1);
+}
+
+.shared-parameters {
+    margin-bottom: 2rem;
+    background: var(--color-surface);
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 51, 160, 0.08);
+    box-shadow: var(--shadow-card);
+}
+
+.shared-parameters .section-title {
+    margin-bottom: 1.5rem;
+    color: var(--color-title);
+}
+
+.shared-grid {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+</style>
+{% endblock %}
+
+
+
+

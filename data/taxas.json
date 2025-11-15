@@ -1,0 +1,18 @@
+{
+  "data_atualizacao": "2025-11-12",
+  "selic_meta": 15.0,
+  "cdi_over": 14.9,
+  "ipca_12m": 4.68,
+  "ipca_mensal": 0.09,
+  "tr_mensal": 0.1722,
+  "cdb_100_cdi_bruto_anual": 14.9,
+  "cdb_100_cdi_liquido_12m": 12.2925,
+  "lci_lca_85_cdi": 12.665,
+  "fundo_di_liquido": 14.65,
+  "poupanca_mensal": 0.6722,
+  "poupanca_anual_aprox": 8.371407215122595,
+  "fonte": {
+    "bcb_sgs": "https://api.bcb.gov.br/dados",
+    "atualizado_em": "2025-11-12T17:49:08"
+  }
+}

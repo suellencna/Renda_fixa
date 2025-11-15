@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Disclaimer - Investir é Realizar{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Exoneração de Responsabilidade</h2>
+    <p class="page-subtitle">Informações importantes sobre o uso das projeções e simulações do Investir é Realizar.</p>
+</div>
+
+<section class="disclaimer-card">
+    <p>
+        Este aplicativo foi desenvolvido pela <strong>Investir é Realizar Escola de Finanças</strong> com o objetivo de fornecer
+        simulações educacionais e comparativos de investimentos. As informações e resultados apresentados possuem natureza
+        exclusivamente informativa e não constituem oferta, solicitação ou recomendação de compra ou venda de quaisquer valores
+        mobiliários, serviços financeiros ou estratégias de investimento.
+    </p>
+
+    <p>
+        As projeções utilizam dados públicos (como Boletim Focus, taxas de referência e informações de mercado) vigentes na data
+        da consulta. Apesar de buscarmos fontes consideradas confiáveis, não garantimos a exatidão, integralidade ou atualização
+        permanente desses dados. Resultados passados não representam garantia de rentabilidade futura e eventos supervenientes
+        podem alterar significativamente as conclusões apresentadas.
+    </p>
+
+    <p>
+        As simulações assumem premissas padronizadas e não levam em conta objetivos, situação financeira, tolerância a risco ou
+        necessidade específica de qualquer pessoa. Antes de realizar investimentos, recomendamos que cada usuário realize sua
+        própria análise e, quando necessário, busque orientação de profissionais devidamente habilitados.
+    </p>
+
+    <p>
+        A Investir é Realizar e seus colaboradores não se responsabilizam por perdas, danos ou prejuízos decorrentes do uso das
+        informações aqui disponibilizadas, nem por decisões de investimento tomadas com base nas simulações apresentadas. O uso
+        deste aplicativo implica ciência e concordância com estes termos.
+    </p>
+
+    <p>
+        Ao prosseguir com o uso do sistema, você reconhece que compreende as limitações das projeções e que os resultados obtidos
+        servem apenas como apoio educacional. Mantenha-se atento às atualizações regulatórias, às decisões do COPOM e às mudanças
+        macroeconômicas que possam impactar investimentos reais.
+    </p>
+
+    {% if require_acceptance %}
+    <form method="post" action="{{ url_for('main.accept_disclaimer') }}" class="disclaimer-actions">
+        <button type="submit" class="btn btn-primary">Li e concordo</button>
+    </form>
+    {% endif %}
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.disclaimer-card {
+    background: var(--color-surface);
+    padding: 2rem;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 51, 160, 0.1);
+    box-shadow: var(--shadow-card);
+    line-height: 1.8;
+    color: var(--color-text-primary);
+}
+
+.disclaimer-card p {
+    margin-bottom: 1.2rem;
+    font-size: 1rem;
+}
+
+.disclaimer-actions {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+</style>
+{% endblock %}
+

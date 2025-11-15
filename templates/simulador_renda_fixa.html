@@ -1,0 +1,393 @@
+{% extends "base.html" %}
+
+{% block title %}Simulador inteligente - Comparador de Renda Fixa{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Simulador inteligente</h2>
+    <p class="page-subtitle">Conte quanto tem, quanto pode colocar por mês e por quanto tempo. Nós traduzimos o jargão e mostramos as melhores opções.</p>
+</div>
+
+<div class="simulador-container">
+    <section class="simulador-form" data-tour-step="1" data-tour-text="Preencha os campos básicos: quanto você tem hoje, quanto consegue aportar por mês e por quanto tempo quer aplicar.">
+        <h3 class="section-title">Dados da Simulação</h3>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="input-valor-inicial" class="form-label">Investimento inicial
+                    <button type="button" class="help-icon" data-help="Dinheiro que já está disponível agora para investir. Ex.: seus R$ 2.500 guardados na poupança.">?</button>
+                </label>
+                <div class="input-prefix">
+                    <span>R$</span>
+                    <input type="number" id="input-valor-inicial" min="0" step="0.01" class="form-input" placeholder="Ex: 10000">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-aporte" class="form-label">Aportes mensais <span class="optional">(opcional)</span>
+                    <button type="button" class="help-icon" data-help="Quanto você consegue reservar todo mês. Pode ser R$ 0, não tem problema!">?</button>
+                </label>
+                <div class="input-prefix">
+                    <span>R$</span>
+                    <input type="number" id="input-aporte" min="0" step="0.01" class="form-input" placeholder="Ex: 500">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-prazo" class="form-label">Período da aplicação
+                    <button type="button" class="help-icon" data-help="Quantos meses o dinheiro ficará trabalhando para você. 24 = 2 anos.">?</button>
+                </label>
+                <div class="input-suffix">
+                    <input type="number" id="input-prazo" min="1" step="1" class="form-input" placeholder="Ex: 24">
+                    <span>meses</span>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="section-title">Taxas vigentes</h3>
+        <div class="taxas-grid">
+            <div class="form-group">
+                <label class="form-label">Selic efetiva (a.a.)
+                    <button type="button" class="help-icon" data-help="Taxa básica de juros do Brasil. Use o valor já preenchido ou atualize se tiver outra referência.">?</button>
+                </label>
+                <div class="input-suffix">
+                    <input type="number" id="param-selic" step="0.01" class="form-input" value="{{ default_params.selic }}">
+                    <span>%</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">CDI (a.a.)
+                    <button type="button" class="help-icon" data-help="Taxa usada pelos bancos para emprestar dinheiro entre si. Investimentos em % do CDI usam esse número.">?</button>
+                </label>
+                <div class="input-suffix">
+                    <input type="number" id="param-cdi" step="0.01" class="form-input" value="{{ default_params.cdi }}">
+                    <span>%</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">IPCA (a.a.)
+                    <button type="button" class="help-icon" data-help="Inflação oficial. Produtos IPCA+ pagam esse índice + um juro extra.">?</button>
+                </label>
+                <div class="input-suffix">
+                    <input type="number" id="param-ipca" step="0.01" class="form-input" value="{{ default_params.ipca }}">
+                    <span>%</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">TR (a.m.)
+                    <button type="button" class="help-icon" data-help="Taxa Referencial. Hoje quase zero, mas usada em alguns produtos (poupança, FGTS).">?</button>
+                </label>
+                <div class="input-suffix">
+                    <input type="number" id="param-tr" step="0.0001" class="form-input" value="{{ default_params.tr }}">
+                    <span>%</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Juro nominal Tesouro Prefixado (a.a.)
+                    <button type="button" class="help-icon" data-help="Taxa atual do Tesouro Prefixado. Ajuste se tiver um número mais recente.">?</button>
+                </label>
+                <div class="input-suffix">
+                    <input type="number" id="param-tesouro-prefixado" step="0.01" class="form-input" value="{{ default_params.tesouro_prefixado_nominal }}">
+                    <span>%</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Taxa de custódia B3 - Tesouro Direto (a.a.)
+                    <button type="button" class="help-icon" data-help="Cobrada pela B3 para guardar seus títulos do Tesouro Direto. Hoje é 0,20% ao ano.">?</button>
+                </label>
+                <div class="input-suffix">
+                    <input type="number" id="param-custodia" step="0.01" class="form-input" value="{{ default_params.taxa_custodia }}">
+                    <span>%</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Juro real Tesouro IPCA+ (a.a.)
+                    <button type="button" class="help-icon" data-help="É o 'IPCA + X%'. O número X entra aqui.">?</button>
+                </label>
+                <div class="input-suffix">
+                    <input type="number" id="param-tesouro-ipca" step="0.01" class="form-input" value="{{ default_params.tesouro_ipca_mais }}">
+                    <span>%</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Taxa de administração Fundo DI (a.a.)
+                    <button type="button" class="help-icon" data-help="O que o fundo cobra por cuidar do dinheiro. Quanto menor, melhor.">?</button>
+                </label>
+                <div class="input-suffix">
+                    <input type="number" id="param-admin-fundo" step="0.01" class="form-input" value="{{ default_params.taxa_admin_fundo_di }}">
+                    <span>%</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Rentabilidade CDB
+                    <button type="button" class="help-icon" data-help="Percentual médio de um CDB padrão. Ajuste conforme a oferta do seu banco.">?</button>
+                </label>
+                <div class="input-suffix">
+                    <input type="number" id="param-rent-cdb" step="0.01" class="form-input" value="{{ default_params.rentabilidade_cdb }}">
+                    <span>% do CDI</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Rentabilidade Fundo DI
+                    <button type="button" class="help-icon" data-help="Quanto um fundo DI costuma entregar em % do CDI.">?</button>
+                </label>
+                <div class="input-suffix">
+                    <input type="number" id="param-rent-fundo" step="0.01" class="form-input" value="{{ default_params.rentabilidade_fundo_di }}">
+                    <span>% do CDI</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Rentabilidade LCI/LCA
+                    <button type="button" class="help-icon" data-help="Percentual médio oferecido para LCI/LCA. Lembre que são isentas de IR.">?</button>
+                </label>
+                <div class="input-suffix">
+                    <input type="number" id="param-rent-lci" step="0.01" class="form-input" value="{{ default_params.rentabilidade_lci_lca }}">
+                    <span>% do CDI</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Rentabilidade Poupança (a.m.)
+                    <button type="button" class="help-icon" data-help="Juro mensal da poupança. Usamos para comparar com alternativas melhores.">?</button>
+                </label>
+                <div class="input-suffix">
+                    <input type="number" id="param-poupanca" step="0.0001" class="form-input" value="{{ default_params.poupanca_mensal }}">
+                    <span>%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="simulador-options">
+            <div>
+                <span class="form-label">Regra de tributação</span>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="tax-regime" value="2025" checked>
+                        <span>Regra vigente (até DEZ/2025)</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="tax-regime" value="2026">
+                        <span>Regra a partir JAN/2026 (MP 1.303/2025)</span>
+                    </label>
+                </div>
+            </div>
+            <div class="options-grid">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="chk-ir" checked>
+                    <span>Incluir impostos (IR)</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="chk-inflacao" checked>
+                    <span>Ajustar pela inflação (IPCA)</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="calculate-button-container">
+            <button id="btn-simular" class="btn btn-primary btn-large">Calcular</button>
+        </div>
+    </section>
+
+    <section class="simulador-resultados" id="resultados-gerais" style="display: none;" data-tour-step="2" data-tour-text="Depois de calcular, veja o placar com as melhores opções, detalhes e a evolução mês a mês.">
+        <div class="grafico-container">
+            <h3>Backtest Rentabilidade | Evolução dos Ativos</h3>
+            <canvas id="grafico-evolucao"></canvas>
+        </div>
+
+        <div class="resultados-resumo">
+            <h3>Melhores opções de investimento</h3>
+            <p class="total-investido">Total investido: <span id="total-investido"></span></p>
+            <div id="lista-resultados" class="lista-resultados"></div>
+            <button id="btn-ver-tabela" class="btn btn-secondary">Ver simulação completa</button>
+        </div>
+
+        <div class="resultados-tabela" id="tabela-detalhes" style="display: none;">
+            <h3>Simulação do investimento</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Investimento</th>
+                        <th>Valor bruto</th>
+                        <th>Rent. bruta</th>
+                        <th>Custos</th>
+                        <th>IR</th>
+                        <th>Valor líquido</th>
+                        <th>Rent. líquida</th>
+                        <th>Ganho líquido</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-corpo"></tbody>
+            </table>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script>
+    const defaultParams = {{ default_params | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/simulador.js') }}"></script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.simulador-container {
+    display: grid;
+    gap: 2.2rem;
+}
+
+.simulador-form,
+.simulador-resultados {
+    background: var(--color-surface);
+    padding: 2.2rem;
+    border-radius: 22px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(0, 51, 160, 0.08);
+}
+
+.section-title {
+    font-size: 1.35rem;
+    margin: 2rem 0 1rem;
+    color: var(--color-title);
+}
+
+.section-title:first-of-type {
+    margin-top: 0;
+}
+
+.form-grid,
+.taxas-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.input-prefix,
+.input-suffix {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    background: rgba(0, 51, 160, 0.04);
+    border-radius: 12px;
+    padding: 0.4rem 0.6rem;
+}
+
+.input-prefix span,
+.input-suffix span {
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.input-prefix input,
+.input-suffix input {
+    border: none;
+    background: transparent;
+    flex: 1;
+    padding: 0;
+}
+
+.simulador-options {
+    margin-top: 2rem;
+    display: grid;
+    gap: 1.6rem;
+}
+
+.lista-resultados {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.6rem 0;
+}
+
+.resultado-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.2rem;
+    background: var(--color-surface-soft);
+    border-radius: 16px;
+    border: 1px solid rgba(0, 51, 160, 0.08);
+    box-shadow: 0 12px 26px rgba(0, 51, 160, 0.07);
+}
+
+.resultado-item strong {
+    font-size: 1rem;
+    color: var(--color-title);
+}
+
+.barra-progresso {
+    position: relative;
+    flex: 1;
+    height: 10px;
+    background: rgba(0, 51, 160, 0.12);
+    border-radius: 999px;
+    margin: 0 1.5rem;
+    overflow: hidden;
+}
+
+.barra-preenchimento {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #0033a0, #ffd300);
+    border-radius: inherit;
+}
+
+.resultados-tabela table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.2rem;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+}
+
+.resultados-tabela th,
+.resultados-tabela td {
+    padding: 0.85rem;
+    text-align: left;
+}
+
+.resultados-tabela th {
+    background: var(--color-title);
+    color: #ffffff;
+}
+
+.resultados-tabela td {
+    background: var(--color-surface);
+    border-bottom: 1px solid rgba(0, 51, 160, 0.08);
+}
+
+.total-investido {
+    font-weight: 600;
+    color: var(--color-title);
+}
+
+.grafico-container {
+    margin-bottom: 2rem;
+    padding: 1.75rem;
+    background: var(--color-surface);
+    border-radius: 20px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(0, 51, 160, 0.08);
+}
+
+.grafico-container h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1.25rem;
+    color: var(--color-title);
+    text-align: left;
+}
+
+.grafico-container canvas {
+    max-height: 360px;
+}
+
+@media (min-width: 1100px) {
+    .simulador-container {
+        grid-template-columns: 1.1fr 0.9fr;
+    }
+}
+</style>
+{% endblock %}
+
+

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Comparador de Renda Fixa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-box">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="logo-img" onerror="this.style.display='none'">
+                <h1 class="logo-text">Comparador de Renda Fixa</h1>
+            </div>
+            
+            <form method="POST" action="{{ url_for('auth.login') }}" class="login-form">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="flash-messages">
+                            {% for category, message in messages %}
+                                <div class="flash-message flash-{{ category }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                <div class="form-group">
+                    <label for="name" class="form-label">Nome completo</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        class="form-input" 
+                        placeholder="Como devemos te chamar?"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">E-mail</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        placeholder="seuemail@exemplo.com"
+                        required
+                        autocomplete="email"
+                    >
+                    <small class="form-help">
+                        Usamos este e-mail apenas para registrar seu acesso e o aceite dos termos.
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="code" class="form-label">Código de Acesso</label>
+                    <input 
+                        type="text" 
+                        id="code" 
+                        name="code" 
+                        class="form-input" 
+                        placeholder="Digite REALIZAR-1A73"
+                        value="REALIZAR-1A73"
+                        required
+                        autocomplete="off"
+                    >
+                    <small class="form-help">
+                        Este código é exclusivo da Investir é Realizar. Mantenha-o em sigilo.
+                    </small>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+            </form>
+
+            <div class="login-info">
+                <p>Não tem um código de acesso? <a href="#" class="link">Entre em contato</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+

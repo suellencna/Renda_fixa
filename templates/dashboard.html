@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+
+{% block title %}Boletim Focus - Comparador de Renda Fixa{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Boletim Focus</h2>
+    <p class="page-subtitle">Dados atualizados do Banco Central do Brasil</p>
+</div>
+
+<div class="dashboard-container">
+    {% if focus_data %}
+    <div class="focus-info">
+        <p class="focus-date">
+            <strong>Data da última atualização:</strong> {{ focus_data.date.strftime('%d/%m/%Y') }}
+        </p>
+        <p class="focus-download">
+            <a href="https://www.bcb.gov.br/publicacoes/focus" target="_blank" rel="noopener" class="focus-download-link">
+                Acessar boletim Focus no site do Banco Central
+            </a>
+        </p>
+        {% if focus_pdf %}
+        <p class="focus-download-secondary">
+            <a href="{{ focus_pdf }}" target="_blank" rel="noopener" class="focus-download-link">
+                Baixar último PDF salvo no sistema
+            </a>
+        </p>
+        {% endif %}
+        <p class="focus-note">
+            Os dados do Boletim Focus são atualizados semanalmente, geralmente às segundas-feiras.
+        </p>
+    </div>
+
+    <div class="focus-grid">
+        <!-- IPCA -->
+        <div class="focus-card">
+            <h3 class="focus-card-title">IPCA - Inflação (%)</h3>
+            <div class="focus-values">
+                <div class="focus-value">
+                    <span class="focus-year">2025</span>
+                    <span class="focus-value-num">{{ "%.2f"|format(focus_data.ipca_2025 or 0) }}%</span>
+                </div>
+                <div class="focus-value">
+                    <span class="focus-year">2026</span>
+                    <span class="focus-value-num">{{ "%.2f"|format(focus_data.ipca_2026 or 0) }}%</span>
+                </div>
+                <div class="focus-value">
+                    <span class="focus-year">2027</span>
+                    <span class="focus-value-num">{{ "%.2f"|format(focus_data.ipca_2027 or 0) }}%</span>
+                </div>
+                <div class="focus-value">
+                    <span class="focus-year">2028</span>
+                    <span class="focus-value-num">{{ "%.2f"|format(focus_data.ipca_2028 or 0) }}%</span>
+                </div>
+            </div>
+            <p class="focus-description">
+                O IPCA mede a inflação oficial do Brasil. É usado para ajustar investimentos e proteger o poder de compra.
+            </p>
+        </div>
+
+        <!-- Selic -->
+        <div class="focus-card">
+            <h3 class="focus-card-title">Selic - Taxa Básica de Juros (% a.a.)</h3>
+            <div class="focus-values">
+                <div class="focus-value">
+                    <span class="focus-year">2025</span>
+                    <span class="focus-value-num">{{ "%.2f"|format(focus_data.selic_2025 or 0) }}%</span>
+                </div>
+                <div class="focus-value">
+                    <span class="focus-year">2026</span>
+                    <span class="focus-value-num">{{ "%.2f"|format(focus_data.selic_2026 or 0) }}%</span>
+                </div>
+                <div class="focus-value">
+                    <span class="focus-year">2027</span>
+                    <span class="focus-value-num">{{ "%.2f"|format(focus_data.selic_2027 or 0) }}%</span>
+                </div>
+                <div class="focus-value">
+                    <span class="focus-year">2028</span>
+                    <span class="focus-value-num">{{ "%.2f"|format(focus_data.selic_2028 or 0) }}%</span>
+                </div>
+            </div>
+            <p class="focus-description">
+                A Selic é a taxa básica de juros do Brasil. Ela influencia todos os investimentos de renda fixa.
+            </p>
+        </div>
+
+        <!-- PIB -->
+        <div class="focus-card">
+            <h3 class="focus-card-title">PIB - Crescimento Econômico (var. %)</h3>
+            <div class="focus-values">
+                <div class="focus-value">
+                    <span class="focus-year">2025</span>
+                    <span class="focus-value-num">{{ "%.2f"|format(focus_data.pib_2025 or 0) }}%</span>
+                </div>
+                <div class="focus-value">
+                    <span class="focus-year">2026</span>
+                    <span class="focus-value-num">{{ "%.2f"|format(focus_data.pib_2026 or 0) }}%</span>
+                </div>
+                <div class="focus-value">
+                    <span class="focus-year">2027</span>
+                    <span class="focus-value-num">{{ "%.2f"|format(focus_data.pib_2027 or 0) }}%</span>
+                </div>
+                <div class="focus-value">
+                    <span class="focus-year">2028</span>
+                    <span class="focus-value-num">{{ "%.2f"|format(focus_data.pib_2028 or 0) }}%</span>
+                </div>
+            </div>
+            <p class="focus-description">
+                O PIB mede o crescimento da economia brasileira. Valores positivos indicam crescimento.
+            </p>
+        </div>
+
+        <!-- Câmbio -->
+        <div class="focus-card">
+            <h3 class="focus-card-title">Câmbio - R$/US$</h3>
+            <div class="focus-values">
+                <div class="focus-value">
+                    <span class="focus-year">2025</span>
+                    <span class="focus-value-num">R$ {{ "%.2f"|format(focus_data.cambio_2025 or 0) }}</span>
+                </div>
+                <div class="focus-value">
+                    <span class="focus-year">2026</span>
+                    <span class="focus-value-num">R$ {{ "%.2f"|format(focus_data.cambio_2026 or 0) }}</span>
+                </div>
+                <div class="focus-value">
+                    <span class="focus-year">2027</span>
+                    <span class="focus-value-num">R$ {{ "%.2f"|format(focus_data.cambio_2027 or 0) }}</span>
+                </div>
+                <div class="focus-value">
+                    <span class="focus-year">2028</span>
+                    <span class="focus-value-num">R$ {{ "%.2f"|format(focus_data.cambio_2028 or 0) }}</span>
+                </div>
+            </div>
+            <p class="focus-description">
+                O câmbio mostra quantos reais são necessários para comprar 1 dólar americano.
+            </p>
+        </div>
+    </div>
+
+    <div class="focus-info-box">
+        <h3>Como usar essas projeções?</h3>
+        <p>
+            As projeções do Boletim Focus são usadas automaticamente nos cálculos do comparador quando você escolhe
+            investimentos que dependem de índices como IPCA ou Selic. Isso torna suas simulações mais precisas e
+            baseadas em dados oficiais do mercado.
+        </p>
+        <p>
+            <strong>Fonte:</strong> Banco Central do Brasil - Boletim Focus
+        </p>
+    </div>
+    {% else %}
+    <div class="focus-empty">
+        <p>Nenhum dado do Boletim Focus disponível no momento.</p>
+        <p>Os dados serão atualizados automaticamente quando o Boletim Focus for publicado.</p>
+        <p>
+            <a href="https://www.bcb.gov.br/publicacoes/focus" target="_blank" rel="noopener" class="focus-download-link">
+                Consultar boletim Focus no site do Banco Central
+            </a>
+        </p>
+        {% if focus_pdf %}
+        <p>
+            <a href="{{ focus_pdf }}" target="_blank" rel="noopener" class="focus-download-link">
+                Baixar último PDF salvo no sistema
+            </a>
+        </p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.dashboard-container {
+    background: var(--color-white);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.focus-info {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: var(--color-bg-light);
+    border-radius: 8px;
+}
+
+.focus-date {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.focus-note {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+.focus-download-link {
+    color: var(--color-link);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.focus-download-secondary {
+    margin-top: 0.25rem;
+}
+
+.focus-download-link:hover {
+    text-decoration: underline;
+}
+
+.focus-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.focus-card {
+    background: var(--color-bg-light);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 2px solid var(--color-border);
+}
+
+.focus-card-title {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-text-primary);
+    border-bottom: 2px solid var(--color-accent);
+    padding-bottom: 0.5rem;
+}
+
+.focus-values {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.focus-value {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: var(--color-white);
+    border-radius: 4px;
+    border-left: 4px solid var(--color-link);
+}
+
+.focus-year {
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.focus-value-num {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--color-link);
+}
+
+.focus-description {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.focus-info-box {
+    background: var(--color-bg-light);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--color-accent);
+}
+
+.focus-info-box h3 {
+    margin-bottom: 1rem;
+    color: var(--color-text-primary);
+}
+
+.focus-info-box p {
+    margin-bottom: 1rem;
+    line-height: 1.8;
+}
+
+.focus-empty {
+    text-align: center;
+    padding: 3rem;
+    color: var(--color-text-secondary);
+}
+
+.focus-empty p {
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock %}
+
+
+
+

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Comparador de Renda Fixa{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="logo-img" onerror="this.style.display='none'">
+                    <h1 class="logo-text">Comparador de Renda Fixa</h1>
+                </div>
+                <nav class="nav">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('main.index') }}" class="nav-link">Compare 2 ativos</a>
+                        <a href="{{ url_for('main.compare_multi') }}" class="nav-link">Compare até 5 ativos</a>
+                        <a href="{{ url_for('main.simulador_renda_fixa') }}" class="nav-link">Simulador inteligente</a>
+                        <a href="{{ url_for('main.dashboard') }}" class="nav-link">Boletim Focus</a>
+                    <a href="{{ url_for('main.disclaimer') }}" class="nav-link">Disclaimer</a>
+                    {% if is_admin_user %}
+                    <a href="{{ url_for('main.admin_users') }}" class="nav-link">Admin</a>
+                    {% endif %}
+                        <a href="{{ url_for('auth.logout') }}" class="nav-link nav-link-logout">Sair</a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="nav-link">Login</a>
+                    <a href="{{ url_for('main.disclaimer') }}" class="nav-link">Disclaimer</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Mensagens flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-message flash-{{ category }}">
+                                {{ message }}
+                                <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Investir é Realizar. Todos os direitos reservados.
+                <a href="{{ url_for('main.disclaimer') }}" class="footer-link">Disclaimer</a>
+            </p>
+        </div>
+    </footer>
+
+    <button class="help-floating-btn" type="button" id="help-main-btn">
+        Preciso de ajuda
+    </button>
+    <div class="help-floating-menu" id="help-floating-menu">
+        <button type="button" class="menu-item" data-open-help>Ver ajuda rápida</button>
+        <button type="button" class="menu-item" data-start-tour>Iniciar tour guiado</button>
+    </div>
+    <div id="help-panel" class="help-panel">
+        <div class="help-panel-content">
+            <button id="help-panel-close" class="help-panel-close" type="button">×</button>
+            <h3>Guia rápido</h3>
+            <p>Alguns termos essenciais:</p>
+            <ul>
+                <li><strong>Valor inicial:</strong> quanto você já tem guardado hoje para aplicar de uma vez.</li>
+                <li><strong>Aporte mensal:</strong> dinheiro que pretende colocar mês a mês. Pode ser zero.</li>
+                <li><strong>Prazo (meses):</strong> tempo que o dinheiro ficará investido sem resgates.</li>
+                <li><strong>Rentabilidade:</strong> a taxa oferecida pelo banco/corretora (pode ser % do CDI, IPCA+ ou fixa).</li>
+                <li><strong>CDI:</strong> taxa usada nos empréstimos entre bancos, bem parecida com a Selic. Muitos investimentos pagam “X% do CDI”.</li>
+                <li><strong>IPCA:</strong> índice oficial de inflação. Produtos IPCA+ rendem inflação + um juro fixo.</li>
+            </ul>
+            <p>Use os ícones “?” perto de cada campo para ver exemplos práticos e dicas rápidas. Sempre que quiser relembrar o passo a passo, clique em “Iniciar tour guiado”.</p>
+        </div>
+    </div>
+
+    <!-- Glossário Modal -->
+    <div id="glossary-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>Glossário</h2>
+            <div id="glossary-content"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/help.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+
+
