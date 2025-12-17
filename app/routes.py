@@ -195,15 +195,42 @@ def _is_admin_user():
 def inject_admin_flag():
     return {'is_admin_user': _is_admin_user()}
 
+@main_bp.route('/admin/login', methods=['GET', 'POST'])
+@login_required
+def admin_login():
+    """Página de login do admin com senha"""
+    if not _is_admin_user():
+        flash('Acesso restrito.', 'error')
+        return redirect(url_for('main.index'))
+    
+    if request.method == 'POST':
+        password = request.form.get('password', '')
+        admin_password = current_app.config.get('ADMIN_PASSWORD', 'admin2025')
+        
+        if password == admin_password:
+            session['admin_authenticated'] = True
+            flash('Acesso administrativo liberado!', 'success')
+            return redirect(url_for('main.admin_users'))
+        else:
+            flash('Senha incorreta.', 'error')
+    
+    return render_template('admin_login.html')
+
 @main_bp.route('/admin/usuarios')
 @login_required
 def admin_users():
     if not _is_admin_user():
         flash('Acesso restrito.', 'error')
         return redirect(url_for('main.index'))
+    
+    # Verifica se está autenticado como admin
+    if not session.get('admin_authenticated'):
+        return redirect(url_for('main.admin_login'))
+    
     from app.models import User
     users = User.query.order_by(User.created_at.desc()).all()
-    return render_template('admin_users.html', users=users)
+    access_code = current_app.config.get('ACCESS_CODE_DEFAULT', 'REALIZAR-1A73')
+    return render_template('admin_users.html', users=users, access_code=access_code)
 
 @main_bp.route('/admin/usuarios/<int:user_id>/reset', methods=['POST'])
 @login_required

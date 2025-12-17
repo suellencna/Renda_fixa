@@ -11,32 +11,39 @@
 <div class="simulador-container">
     <section class="simulador-form" data-tour-step="1" data-tour-text="Preencha os campos básicos: quanto você tem hoje, quanto consegue aportar por mês e por quanto tempo quer aplicar.">
         <h3 class="section-title">Dados da Simulação</h3>
-        <div class="form-grid">
-            <div class="form-group">
-                <label for="input-valor-inicial" class="form-label">Investimento inicial
-                    <button type="button" class="help-icon" data-help="Dinheiro que já está disponível agora para investir. Ex.: seus R$ 2.500 guardados na poupança.">?</button>
-                </label>
-                <div class="input-prefix">
-                    <span>R$</span>
-                    <input type="number" id="input-valor-inicial" min="0" step="0.01" class="form-input" placeholder="Ex: 10000">
-                </div>
+        
+        <div class="campos-essenciais">
+            <div class="campos-essenciais-header">
+                <span class="badge-essencial">✨ Campos essenciais</span>
+                <small>Preencha estes campos para começar</small>
             </div>
-            <div class="form-group">
-                <label for="input-aporte" class="form-label">Aportes mensais <span class="optional">(opcional)</span>
-                    <button type="button" class="help-icon" data-help="Quanto você consegue reservar todo mês. Pode ser R$ 0, não tem problema!">?</button>
-                </label>
-                <div class="input-prefix">
-                    <span>R$</span>
-                    <input type="number" id="input-aporte" min="0" step="0.01" class="form-input" placeholder="Ex: 500">
+            <div class="form-grid">
+                <div class="form-group campo-destaque">
+                    <label for="input-valor-inicial" class="form-label">Investimento inicial
+                        <button type="button" class="help-icon" data-help="Dinheiro que já está disponível agora para investir. Ex.: seus R$ 2.500 guardados na poupança.">?</button>
+                    </label>
+                    <div class="input-prefix">
+                        <span>R$</span>
+                        <input type="number" id="input-valor-inicial" min="0" step="0.01" class="form-input" placeholder="Ex: 10000">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="input-prazo" class="form-label">Período da aplicação
-                    <button type="button" class="help-icon" data-help="Quantos meses o dinheiro ficará trabalhando para você. 24 = 2 anos.">?</button>
-                </label>
-                <div class="input-suffix">
-                    <input type="number" id="input-prazo" min="1" step="1" class="form-input" placeholder="Ex: 24">
-                    <span>meses</span>
+                <div class="form-group campo-destaque">
+                    <label for="input-aporte" class="form-label">Aportes mensais <span class="optional">(opcional)</span>
+                        <button type="button" class="help-icon" data-help="Quanto você consegue reservar todo mês. Pode ser R$ 0, não tem problema!">?</button>
+                    </label>
+                    <div class="input-prefix">
+                        <span>R$</span>
+                        <input type="number" id="input-aporte" min="0" step="0.01" class="form-input" placeholder="Ex: 500">
+                    </div>
+                </div>
+                <div class="form-group campo-destaque">
+                    <label for="input-prazo" class="form-label">Período da aplicação
+                        <button type="button" class="help-icon" data-help="Quantos meses o dinheiro ficará trabalhando para você. 24 = 2 anos.">?</button>
+                    </label>
+                    <div class="input-suffix">
+                        <input type="number" id="input-prazo" min="1" step="1" class="form-input" placeholder="Ex: 24">
+                        <span>meses</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -251,6 +258,48 @@
 
 .section-title:first-of-type {
     margin-top: 0;
+}
+
+/* Campos essenciais destacados */
+.campos-essenciais {
+    background: linear-gradient(135deg, #e8f4fd 0%, #fff8e1 100%);
+    border: 2px solid #ffd300;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 16px rgba(255, 211, 0, 0.15);
+}
+
+.campos-essenciais-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.badge-essencial {
+    background: linear-gradient(135deg, #0033a0 0%, #0055cc 100%);
+    color: #ffd300;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.campos-essenciais-header small {
+    color: var(--color-text-secondary);
+}
+
+.campo-destaque .input-prefix,
+.campo-destaque .input-suffix {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #0033a0;
+}
+
+.campo-destaque .form-label {
+    font-weight: 700;
+    color: #0033a0;
 }
 
 .form-grid,

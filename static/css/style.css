@@ -396,6 +396,12 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
 }
 
+.login-info .contact-email {
+    margin-top: 0.75rem;
+    color: var(--color-title);
+    font-size: 0.95rem;
+}
+
 /* Formulários */
 .form-group {
     margin-bottom: 1.5rem;

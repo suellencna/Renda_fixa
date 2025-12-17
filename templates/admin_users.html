@@ -8,6 +8,12 @@
     <p class="page-subtitle">Registro de acessos, e-mails e aceite do disclaimer.</p>
 </div>
 
+<div class="admin-info-card">
+    <h3>📋 Informações do Administrador</h3>
+    <p><strong>Código de Acesso atual:</strong> <code>{{ access_code }}</code></p>
+    <small>Este é o código que você fornece para os clientes acessarem a plataforma.</small>
+</div>
+
 <div class="admin-users-card">
     <div class="admin-actions">
         <a href="{{ url_for('main.admin_export_users') }}" class="btn btn-secondary">Exportar CSV</a>
@@ -104,6 +110,38 @@
     cursor: pointer;
     text-decoration: underline;
     padding: 0;
+}
+
+.admin-info-card {
+    background: linear-gradient(135deg, #e8f4fd 0%, #fff8e1 100%);
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 2px solid #ffd300;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 51, 160, 0.1);
+}
+
+.admin-info-card h3 {
+    color: var(--color-title);
+    margin: 0 0 0.75rem 0;
+    font-size: 1.1rem;
+}
+
+.admin-info-card p {
+    margin: 0 0 0.5rem 0;
+}
+
+.admin-info-card code {
+    background: #0033a0;
+    color: #ffd300;
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.admin-info-card small {
+    color: var(--color-text-secondary);
 }
 </style>
 {% endblock %}

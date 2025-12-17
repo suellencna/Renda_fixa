@@ -7,6 +7,7 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///comparador.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     ACCESS_CODE_DEFAULT = os.environ.get('ACCESS_CODE_DEFAULT') or 'REALIZAR-1A73'
+    ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD') or 'admin2025'
     if os.environ.get('ADMIN_EMAILS'):
         ADMIN_EMAILS = [email.strip() for email in os.environ.get('ADMIN_EMAILS', '').split(',') if email.strip()]
     else:
