@@ -25,9 +25,6 @@
                         <a href="{{ url_for('main.simulador_renda_fixa') }}" class="nav-link">Simulador inteligente</a>
                         <a href="{{ url_for('main.dashboard') }}" class="nav-link">Boletim Focus</a>
                     <a href="{{ url_for('main.disclaimer') }}" class="nav-link">Disclaimer</a>
-                    {% if is_admin_user %}
-                    <a href="{{ url_for('main.admin_login') }}" class="nav-link">Admin</a>
-                    {% endif %}
                         <a href="{{ url_for('auth.logout') }}" class="nav-link nav-link-logout">Sair</a>
                     {% else %}
                         <a href="{{ url_for('auth.login') }}" class="nav-link">Login</a>
