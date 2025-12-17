@@ -172,3 +172,4 @@ comparador-renda-fixa/
 
 Este projeto é propriedade da Potens Investimentos.
 
+# Force rebuild
