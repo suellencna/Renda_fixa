@@ -6,6 +6,12 @@ from app.models import AccessCode, User
 
 auth_bp = Blueprint('auth', __name__)
 
+def _is_admin_email(email):
+    """Verifica se o email é de um administrador"""
+    admins = current_app.config.get('ADMIN_EMAILS') or []
+    admins = [adm.strip().lower() for adm in admins if adm.strip()]
+    return email.lower() in admins
+
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     """Tela de login com código de acesso"""
@@ -15,17 +21,21 @@ def login():
         email = request.form.get('email', '').strip().lower()
         name = request.form.get('name', '').strip()
         
-        if not code:
-            flash('Por favor, digite seu código de acesso.', 'error')
-            return render_template('login.html')
-        
-        if fixed_code and code != fixed_code:
-            flash('Código de acesso inválido. Verifique se digitou corretamente.', 'error')
-            return render_template('login.html')
-        
         if not email:
             flash('Informe um e-mail válido para continuar.', 'error')
             return render_template('login.html')
+        
+        # Admin não precisa de código de acesso
+        is_admin = _is_admin_email(email)
+        
+        if not is_admin:
+            if not code:
+                flash('Por favor, digite seu código de acesso.', 'error')
+                return render_template('login.html')
+            
+            if fixed_code and code != fixed_code:
+                flash('Código de acesso inválido. Verifique se digitou corretamente.', 'error')
+                return render_template('login.html')
         
         # Garante existência do código fixo
         access_code = AccessCode.query.filter_by(code=fixed_code).first()
