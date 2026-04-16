@@ -3,89 +3,667 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Comparador de Renda Fixa</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Comparador de Renda Fixa Gratuito | Investir é Realizar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+    /* ── Reset & Base ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+        font-family: 'Open Sans', sans-serif;
+        background: #f0f4f8;
+        color: #1a1a2e;
+        min-height: 100vh;
+    }
+
+    .landing-page {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* ── HERO SECTION ─────────────────────────────────── */
+    .hero {
+        background: linear-gradient(160deg, #001a4d 0%, #0033a0 40%, #01536b 100%);
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: -20%;
+        right: -10%;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(251,185,17,0.08) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .hero::after {
+        content: '';
+        position: absolute;
+        bottom: -15%;
+        left: -5%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(1,83,107,0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .hero-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+        padding: 3rem 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ── Lado esquerdo: Copy ──────────────────────────── */
+    .hero-copy {
+        flex: 1.1;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(251,185,17,0.15);
+        border: 1px solid rgba(251,185,17,0.3);
+        color: #fbb911;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        padding: 0.4rem 0.9rem;
+        border-radius: 999px;
+        margin-bottom: 1.25rem;
+    }
+
+    .hero-title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1.25;
+        margin-bottom: 1rem;
+    }
+
+    .hero-title .highlight {
+        color: #fbb911;
+    }
+
+    .hero-subtitle {
+        font-size: 1.05rem;
+        line-height: 1.65;
+        opacity: 0.9;
+        margin-bottom: 1.75rem;
+        max-width: 520px;
+    }
+
+    /* ── Benefícios ───────────────────────────────────── */
+    .benefits {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+        margin-bottom: 2rem;
+    }
+
+    .benefits li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.65rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .benefits li .check {
+        flex-shrink: 0;
+        width: 22px;
+        height: 22px;
+        background: rgba(251,185,17,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        margin-top: 2px;
+    }
+
+    /* ── Credibilidade ────────────────────────────────── */
+    .credibility {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.85rem 1rem;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        max-width: 420px;
+    }
+
+    .credibility-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(251,185,17,0.4);
+        flex-shrink: 0;
+    }
+
+    .credibility-text {
+        font-size: 0.82rem;
+        line-height: 1.5;
+        opacity: 0.85;
+    }
+
+    .credibility-text p {
+    margin-bottom: 0.35rem;
+    }
+
+    .credibility-insta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        color: #fbb911;
+        text-decoration: none;
+        font-size: 0.82rem;
+        font-weight: 600;
+        transition: opacity 0.2s;
+    }
+
+    .credibility-insta:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+    }
+
+
+    .credibility-text strong {
+        color: #fbb911;
+        opacity: 1;
+    }
+
+    /* ── Lado direito: Formulário ─────────────────────── */
+    .hero-form-wrap {
+        flex: 0 0 400px;
+    }
+
+    .form-card {
+        background: #fff;
+        padding: 2.25rem 2rem;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        position: relative;
+    }
+
+    .form-card::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(135deg, #fbb911 0%, #0033a0 50%, #01536b 100%);
+        border-radius: 22px;
+        z-index: -1;
+        opacity: 0.5;
+    }
+
+    .form-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #090f3f;
+        margin-bottom: 0.3rem;
+    }
+
+    .form-subtitle {
+        color: #5a5f6d;
+        font-size: 0.88rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+    }
+
+    .form-group {
+        margin-bottom: 1.1rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: #090f3f;
+        margin-bottom: 0.3rem;
+        font-size: 0.88rem;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1.5px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        font-family: 'Open Sans', sans-serif;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        background: #fafbfc;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #fbb911;
+        box-shadow: 0 0 0 3px rgba(251,185,17,0.15);
+        background: #fff;
+    }
+
+    .form-input::placeholder {
+        color: #b0b3ba;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 0.9rem;
+        background: linear-gradient(135deg, #fbb911 0%, #e0a70d 100%);
+        color: #090f3f;
+        border: none;
+        border-radius: 999px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        font-family: 'Montserrat', sans-serif;
+        cursor: pointer;
+        transition: all 0.25s;
+        margin-top: 0.5rem;
+        letter-spacing: 0.3px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(251,185,17,0.4);
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+
+    .btn-subtitle {
+        display: block;
+        text-align: center;
+        font-size: 0.78rem;
+        color: #8a8d95;
+        margin-top: 0.65rem;
+    }
+
+    .btn-subtitle svg {
+        vertical-align: middle;
+        margin-right: 2px;
+    }
+
+    /* ── Prova social mini ────────────────────────────── */
+    .social-proof-mini {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1.25rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .avatars-stack {
+        display: flex;
+    }
+
+    .avatars-stack .avatar-dot {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        margin-left: -8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+    }
+
+    .avatars-stack .avatar-dot:first-child { margin-left: 0; background: #0033a0; }
+    .avatars-stack .avatar-dot:nth-child(2) { background: #01536b; }
+    .avatars-stack .avatar-dot:nth-child(3) { background: #fbb911; }
+
+    .social-proof-text {
+        font-size: 0.78rem;
+        color: #7a7d85;
+    }
+
+    /* ── Flash messages ───────────────────────────────── */
+    .flash-messages { margin-bottom: 1rem; }
+
+    .flash-message {
+        padding: 0.65rem 0.85rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .flash-error   { background: #fdeaea; color: #b91c1c; border: 1px solid #f5c6c6; }
+    .flash-success { background: #eafde7; color: #166534; border: 1px solid #bbf7d0; }
+    .flash-info    { background: #e8f4fd; color: #0033a0; border: 1px solid #bfdbfe; }
+
+    /* ── COMO FUNCIONA (abaixo do hero) ───────────────── */
+    .how-it-works {
+        background: #fff;
+        padding: 3rem 2rem;
+    }
+
+    .how-inner {
+        max-width: 900px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .how-inner h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: #090f3f;
+        margin-bottom: 2rem;
+    }
+
+    .steps {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+    }
+
+    .step {
+        flex: 1;
+        max-width: 250px;
+        text-align: center;
+    }
+
+    .step-number {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, #0033a0, #01536b);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 1.1rem;
+        margin: 0 auto 0.75rem;
+    }
+
+    .step h3 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #090f3f;
+        margin-bottom: 0.35rem;
+    }
+
+    .step p {
+        font-size: 0.85rem;
+        color: #5a5f6d;
+        line-height: 1.55;
+    }
+
+    /* ── FOOTER mínimo ────────────────────────────────── */
+    .landing-footer {
+        background: #090f3f;
+        color: rgba(255,255,255,0.6);
+        text-align: center;
+        padding: 1.5rem 2rem;
+        font-size: 0.8rem;
+        margin-top: auto;
+    }
+
+    .landing-footer a {
+        color: #fbb911;
+        text-decoration: none;
+    }
+
+    .landing-footer a:hover { text-decoration: underline; }
+
+    /* ── Responsivo ───────────────────────────────────── */
+    @media (max-width: 900px) {
+        .hero-inner {
+            flex-direction: column;
+            padding: 2rem 1.25rem;
+            gap: 2rem;
+        }
+
+        .hero-copy {
+            text-align: center;
+        }
+
+        .hero-title { font-size: 1.6rem; }
+        .hero-subtitle { margin: 0 auto 1.5rem; }
+
+        .benefits {
+            align-items: center;
+        }
+
+        .benefits li {
+            max-width: 340px;
+        }
+
+        .credibility {
+            margin: 0 auto;
+            max-width: 360px;
+        }
+
+        .hero-form-wrap {
+            flex: none;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .steps {
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-inner { padding: 1.5rem 1rem; }
+        .hero-title { font-size: 1.4rem; }
+        .form-card { padding: 1.75rem 1.25rem; }
+        .hero-form-wrap { max-width: 100%; }
+    }
+    </style>
 </head>
-<body class="login-page">
-    <div class="login-container">
-        <div class="login-box">
-            <div class="logo">
-                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="logo-img" onerror="this.style.display='none'">
-                <h1 class="logo-text">Comparador de Renda Fixa</h1>
+<body>
+<div class="landing-page">
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- HERO — captura principal                          -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <section class="hero">
+        <div class="hero-inner">
+
+            <!-- COPY -->
+            <div class="hero-copy">
+                <div class="hero-badge">🎯 100% gratuito</div>
+
+                <h1 class="hero-title">
+                    Descubra qual investimento<br>
+                    de renda fixa <span class="highlight">rende mais<br>
+                    pro seu bolso</span>
+                </h1>
+
+                <p class="hero-subtitle">
+                    Compare CDB, LCI, LCA e Tesouro Direto lado a lado
+                    e veja na hora qual é a melhor escolha — já com
+                    desconto de impostos e taxas.
+                </p>
+
+                <ul class="benefits">
+                    <li>
+                        <span class="check">✓</span>
+                        <span>Compare até <strong>5 investimentos</strong> ao mesmo tempo</span>
+                    </li>
+                    <li>
+                        <span class="check">✓</span>
+                        <span>Cálculo automático com <strong>IR e taxas reais</strong></span>
+                    </li>
+                    <li>
+                        <span class="check">✓</span>
+                        <span>Sem economês — <strong>resultado claro e direto</strong></span>
+                    </li>
+                    <li>
+                        <span class="check">✓</span>
+                        <span>Feito por quem <strong>trabalhou em corretora e banco</strong></span>
+                    </li>
+                </ul>
+
+                <div class="credibility">
+                    <img src="{{ url_for('static', filename='img/suellen-avatar.png') }}"
+                         alt="Suellen Pinto"
+                         class="credibility-avatar"
+                         onerror="this.style.display='none'">
+                    <div class="credibility-text">
+                        <p>
+                            Criado por <strong>Suellen Pinto</strong>, educadora financeira
+                            com experiência em corretora de valores e banco.
+                        </p>
+                        <a href="https://www.instagram.com/suellenandradepinto/"
+                           target="_blank" rel="noopener" class="credibility-insta">
+                            @suellenandradepinto
+                        </a>
+                    </div>
+                </div>
+
             </div>
-            
-            <form method="POST" action="{{ url_for('auth.login') }}" class="login-form">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        <div class="flash-messages">
-                            {% for category, message in messages %}
-                                <div class="flash-message flash-{{ category }}">
-                                    {{ message }}
+
+            <!-- FORMULÁRIO -->
+            <div class="hero-form-wrap">
+                <div class="form-card">
+
+                    <h2 class="form-title">Acesse o Comparador</h2>
+                    <p class="form-subtitle">
+                        Preencha abaixo e use a ferramenta agora mesmo — é grátis.
+                    </p>
+
+                    <form method="POST" action="{{ url_for('auth.login') }}">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                <div class="flash-messages">
+                                    {% for category, message in messages %}
+                                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                                    {% endfor %}
                                 </div>
-                            {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+
+                        <div class="form-group">
+                            <label for="name" class="form-label">Seu primeiro nome</label>
+                            <input type="text" id="name" name="name" class="form-input"
+                                   placeholder="Ex: Maria" required autofocus>
                         </div>
-                    {% endif %}
-                {% endwith %}
 
-                <div class="form-group">
-                    <label for="name" class="form-label">Nome completo</label>
-                    <input 
-                        type="text" 
-                        id="name" 
-                        name="name" 
-                        class="form-input" 
-                        placeholder="Como devemos te chamar?"
-                        required
-                        autofocus
-                    >
+                        <div class="form-group">
+                            <label for="email" class="form-label">Seu melhor e-mail</label>
+                            <input type="email" id="email" name="email" class="form-input"
+                                   placeholder="maria@email.com" required autocomplete="email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone" class="form-label">
+                                WhatsApp <span style="font-weight:400; color:#9a9b9e;"></span>
+                            </label>
+                            <input type="tel" id="phone" name="phone" class="form-input"
+                                   placeholder="(11) 99999-9999" autocomplete="tel">
+                            <small style="display:block; font-size:0.78rem; color:#01536b; margin-top:0.2rem; line-height:1.4;">
+                                📩 Vou te mandar por lá o link direto do Comparador. Só isso.
+                            </small>
+                        </div>
+
+                        <button type="submit" class="btn-submit">
+                            Comparar meus investimentos →
+                        </button>
+
+                        <span class="btn-subtitle">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                 stroke="#8a8d95" stroke-width="2.5" stroke-linecap="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2"/>
+                                <path d="M7 11V7a5 5 0 0110 0v4"/>
+                            </svg>
+                            Seus dados estão seguros.
+                            Sem spam, cancele quando quiser.
+                        </span>
+                    </form>
+
+                    <div class="social-proof-mini">
+                        <div class="avatars-stack">
+                            <span class="avatar-dot">👩</span>
+                            <span class="avatar-dot">👩‍💼</span>
+                            <span class="avatar-dot">👩‍🦱</span>
+                        </div>
+                        <span class="social-proof-text">
+                            Mulheres que estão começando a investir já usam
+                        </span>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="email" class="form-label">E-mail</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        class="form-input" 
-                        placeholder="seuemail@exemplo.com"
-                        required
-                        autocomplete="email"
-                    >
-                    <small class="form-help">
-                        Usamos este e-mail apenas para registrar seu acesso e o aceite dos termos.
-                    </small>
-                </div>
-
-                <div class="form-group">
-                    <label for="code" class="form-label">Código de Acesso</label>
-                    <input 
-                        type="text" 
-                        id="code" 
-                        name="code" 
-                        class="form-input" 
-                        placeholder="Digite seu código de acesso"
-                        required
-                        autocomplete="off"
-                    >
-                    <small class="form-help">
-                        Este código é exclusivo da Investir é Realizar. Mantenha-o em sigilo.
-                    </small>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-block">Entrar</button>
-            </form>
-
-            <div class="login-info">
-                <p>Não tem um código de acesso? <a href="mailto:investir.realizar@gmail.com" class="link">Entre em contato</a></p>
-                <p class="contact-email"><strong>📧 investir.realizar@gmail.com</strong></p>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- COMO FUNCIONA                                     -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <section class="how-it-works">
+        <div class="how-inner">
+            <h2>Como funciona?</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Cadastre-se grátis</h3>
+                    <p>Só precisa do seu nome e e-mail. Leva 10 segundos.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Insira os investimentos</h3>
+                    <p>Coloque os dados de CDB, LCI, LCA ou Tesouro que quer comparar.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Veja o resultado na hora</h3>
+                    <p>Descubra qual rende mais já com impostos e taxas descontados.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- FOOTER                                            -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <footer class="landing-footer">
+        <p>
+            © 2026 <a href="https://www.investirerealizar.com.br/"
+            target="_blank" rel="noopener">Investir é Realizar</a> · Suellen Pinto
+        </p>
+    </footer>
+
+</div>
 </body>
 </html>
-
-
-
-
 
 

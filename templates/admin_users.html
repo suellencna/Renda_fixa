@@ -24,6 +24,7 @@
                 <tr>
                     <th>Nome</th>
                     <th>E-mail</th>
+                    <th>Telefone</th>  <!-- NOVA COLUNA -->
                     <th>Data de cadastro</th>
                     <th>Último acesso</th>
                     <th>Aceite do disclaimer</th>
@@ -35,6 +36,7 @@
                 <tr>
                     <td>{{ user.name or '—' }}</td>
                     <td>{{ user.email or '—' }}</td>
+                    <td>{{ user.phone or '—' }}</td>  <!-- NOVA COLUNA -->
                     <td>{{ user.created_at.strftime('%d/%m/%Y %H:%M') if user.created_at else '—' }}</td>
                     <td>{{ user.last_access.strftime('%d/%m/%Y %H:%M') if user.last_access else '—' }}</td>
                     <td>

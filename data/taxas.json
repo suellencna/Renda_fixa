@@ -1,18 +1,21 @@
 {
-  "data_atualizacao": "2025-11-12",
-  "selic_meta": 15.0,
-  "cdi_over": 14.9,
-  "ipca_12m": 4.68,
-  "ipca_mensal": 0.09,
+  "data_atualizacao": "2026-04-15",
+  "selic_meta": 14.75,
+  "cdi_over": 14.65,
+  "ipca_12m": 3.81,
+  "ipca_mensal": 0.70,
   "tr_mensal": 0.1722,
-  "cdb_100_cdi_bruto_anual": 14.9,
-  "cdb_100_cdi_liquido_12m": 12.2925,
-  "lci_lca_85_cdi": 12.665,
-  "fundo_di_liquido": 14.65,
+  "cdb_100_cdi_bruto_anual": 14.65,
+  "cdb_100_cdi_liquido_12m": 12.09,
+  "lci_lca_85_cdi": 12.4525,
+  "fundo_di_liquido": 14.36,
   "poupanca_mensal": 0.6722,
-  "poupanca_anual_aprox": 8.371407215122595,
+  "poupanca_anual_aprox": 8.371,
+  "tesouro_prefixado_nominal": 13.0,
+  "tesouro_ipca_mais": 7.2,
+  "taxa_admin_fundo_di": 0.25,
   "fonte": {
     "bcb_sgs": "https://api.bcb.gov.br/dados",
-    "atualizado_em": "2025-11-12T17:49:08"
+    "atualizado_em": "2026-04-15T20:00:00"
   }
 }

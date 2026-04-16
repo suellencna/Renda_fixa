@@ -169,8 +169,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Coleta dados
             const incluirIR = document.getElementById('incluir_ir').checked;
             const ajustarInflacao = document.getElementById('ajustar_inflacao').checked;
-            const taxRegimeInput = document.querySelector('input[name="tax_regime"]:checked');
-            const taxRegime = taxRegimeInput ? taxRegimeInput.value : '2025';
+            const taxRegime = 'vigente';
+
             
             const data1 = {
                 investimento_type: form1.querySelector('[name="investimento_type"]').value,

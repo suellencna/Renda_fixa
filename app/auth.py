@@ -14,64 +14,63 @@ def _is_admin_email(email):
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    """Tela de login com código de acesso"""
+    """Tela de login — sem código de acesso"""
     if request.method == 'POST':
-        fixed_code = current_app.config.get('ACCESS_CODE_DEFAULT', '').strip().upper()
-        code = request.form.get('code', '').strip().upper()
         email = request.form.get('email', '').strip().lower()
         name = request.form.get('name', '').strip()
-        
+        phone = request.form.get('phone', '').strip()
+
         if not email:
             flash('Informe um e-mail válido para continuar.', 'error')
             return render_template('login.html')
-        
-        # Admin não precisa de código de acesso
-        is_admin = _is_admin_email(email)
-        
-        if not is_admin:
-            if not code:
-                flash('Por favor, digite seu código de acesso.', 'error')
-                return render_template('login.html')
-            
-            if fixed_code and code != fixed_code:
-                flash('Código de acesso inválido. Verifique se digitou corretamente.', 'error')
-                return render_template('login.html')
-        
-        # Garante existência do código fixo
+
+        if not name:
+            flash('Informe seu nome para continuar.', 'error')
+            return render_template('login.html')
+
+        if not phone:
+            flash('Informe seu WhatsApp para continuar.', 'error')
+            return render_template('login.html')
+
+        # Garante existência de um código fixo interno (mantém compatibilidade do banco)
+        fixed_code = current_app.config.get('ACCESS_CODE_DEFAULT', 'REALIZAR-FREE').strip().upper()
         access_code = AccessCode.query.filter_by(code=fixed_code).first()
         if not access_code:
             access_code = AccessCode(code=fixed_code, created_by='system')
             db.session.add(access_code)
             db.session.commit()
-        
+
         if not access_code.is_used:
             access_code.activate()
-        
-        # Busca usuário pelo e-mail
+
+        # Busca ou cria usuário
         user = User.query.filter_by(email=email).first()
-        
+
         if not user:
             user = User(
                 email=email,
                 name=name or None,
+                phone=phone or None,
                 access_code_id=access_code.id
             )
             db.session.add(user)
         else:
             if name and not user.name:
                 user.name = name
+            if phone and not user.phone:
+                user.phone = phone
             if user.access_code_id != access_code.id:
                 user.access_code_id = access_code.id
-        
+
         user.last_access = datetime.utcnow()
         db.session.commit()
-        
+
         login_user(user, remember=True)
         session['accepted_disclaimer'] = bool(user.disclaimer_accepted_at)
-        
+
         flash('Login realizado com sucesso!', 'success')
         return redirect(url_for('main.index'))
-    
+
     return render_template('login.html')
 
 @auth_bp.route('/logout')
@@ -82,4 +81,3 @@ def logout():
     session.pop('accepted_disclaimer', None)
     flash('Você saiu com sucesso.', 'info')
     return redirect(url_for('auth.login'))
-

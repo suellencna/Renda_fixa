@@ -5,38 +5,31 @@ import math
 from datetime import datetime
 from app.models import FocusData
 
-# Tabelas regressivas de IR
+# Tabela regressiva de IR — regra vigente
+# (MP 1.303/2025 caducou, não entrou em vigor)
 IR_TABLES = {
-    '2025': [
-        (180, 0.225),   # Até 180 dias: 22,5%
-        (360, 0.20),    # 181 a 360 dias: 20%
-        (720, 0.175),   # 361 a 720 dias: 17,5%
-        (float('inf'), 0.15)  # Acima de 720 dias: 15%
-    ],
-    '2026': [
-        (float('inf'), 0.175)  # Alíquota única de 17,5%
+    'vigente': [
+        (180, 0.225),        # Até 180 dias: 22,5%
+        (360, 0.20),         # 181 a 360 dias: 20%
+        (720, 0.175),        # 361 a 720 dias: 17,5%
+        (float('inf'), 0.15) # Acima de 720 dias: 15%
     ]
 }
 
-INVESTIMENTOS_ISENTOS_ATE_2025 = {'lci', 'lca', 'debenture_incentivada'}
+INVESTIMENTOS_ISENTOS = {'lci', 'lca', 'debenture_incentivada'}
 
-def get_ir_rate(days, investimento_type=None, tax_regime='2025'):
+
+def get_ir_rate(days, investimento_type=None, tax_regime=None):
     """
-    Retorna a alíquota de IR baseada no prazo em dias e regime tributário.
-    Para 2026, usa alíquotas fixas conforme MP 1.303/2025 (ainda pendente de aprovação).
+    Retorna a alíquota de IR baseada no prazo em dias.
+    Usa sempre a tabela regressiva vigente.
     """
-    tax_regime = tax_regime or '2025'
-    
-    if tax_regime == '2026':
-        if investimento_type in INVESTIMENTOS_ISENTOS_ATE_2025:
-            return 0.05  # Alíquota reduzida para ativos antes isentos
-        return 0.175
-    
-    table = IR_TABLES.get('2025')
+    table = IR_TABLES['vigente']
     for limit, rate in table:
         if days <= limit:
             return rate
     return table[-1][1]
+
 
 def get_focus_projection(year=None):
     """Retorna projeção do Focus para o ano especificado (ou ano atual)"""
@@ -185,41 +178,21 @@ def calcular_rentabilidade_bruta(
         'total_investido': total_investido
     }
 
-def calcular_imposto_renda(valor_bruto, total_investido, meses, investimento_type, tax_regime='2025'):
-    """
-    Calcula imposto de renda sobre o ganho
-    
-    Args:
-        valor_bruto: valor bruto acumulado
-        total_investido: total investido (inicial + aportes)
-        meses: prazo em meses
-        investimento_type: tipo de investimento
-    
-    Returns:
-        valor_ir: valor do imposto a pagar
-    """
-    tax_regime = tax_regime or '2025'
-    
-    # Regra vigente até 2025 mantém isenção de LCI/LCA
-    if tax_regime == '2025' and investimento_type in INVESTIMENTOS_ISENTOS_ATE_2025:
+def calcular_imposto_renda(valor_bruto, total_investido, meses, investimento_type, tax_regime=None):
+    """Calcula imposto de renda sobre o ganho"""
+    # LCI/LCA e debêntures incentivadas são isentas
+    if investimento_type in INVESTIMENTOS_ISENTOS:
         return 0
-    
-    # Calcula ganho
+
     ganho = valor_bruto - total_investido
-    
     if ganho <= 0:
         return 0
-    
-    # Dias para calcular IR
+
     dias = meses * 30
-    
-    # Alíquota de IR
-    aliquota = get_ir_rate(dias, investimento_type=investimento_type, tax_regime=tax_regime)
-    
-    # Valor do IR
-    valor_ir = ganho * aliquota
-    
-    return valor_ir
+    aliquota = get_ir_rate(dias, investimento_type=investimento_type)
+    return ganho * aliquota
+
+    #return valor_ir
 
 def ajustar_inflacao(valor_nominal, meses, ipca=None):
     """
@@ -263,7 +236,7 @@ def calcular_investimento_completo(
     ajustar_inflacao_flag=True,
     selic=None,
     ipca=None,
-    tax_regime='2025',
+    tax_regime='vigente',
     taxa_custodia_tesouro=0.002,
     taxa_custos_extra=0.0
 ):
@@ -347,7 +320,7 @@ def simular_investimentos_padrao(
     parametros,
     incluir_ir=True,
     ajustar_inflacao_flag=True,
-    tax_regime='2025'
+    tax_regime='vigente'
 ):
     """
     Realiza uma simulação padronizada com múltiplos investimentos de uma vez.
@@ -541,7 +514,7 @@ def calcular_evolucao_mensal(
     parametros,
     incluir_ir=True,
     ajustar_inflacao_flag=True,
-    tax_regime='2025',
+    tax_regime='vigente',
     taxa_custos_extra=0.0
 ):
     """
@@ -601,9 +574,10 @@ def calcular_evolucao_mensal(
             aliquota = get_ir_rate(dias, investimento_type=investimento_type, tax_regime=tax_regime)
             
             # Verifica isenção
-            if not (tax_regime == '2025' and investimento_type in INVESTIMENTOS_ISENTOS_ATE_2025):
+            # ✅ CORRIGIDO:
+            if investimento_type not in INVESTIMENTOS_ISENTOS:
                 valor_ir = ganho_bruto * aliquota
-        
+
         # Valor líquido
         valor_liquido = valor_atual - valor_ir - custos
         

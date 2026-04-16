@@ -131,19 +131,6 @@
     <!-- Opções de Cálculo -->
     <div class="calculation-options">
         <h3>Opções de Cálculo</h3>
-        <div class="form-subgroup">
-            <span class="form-label">Regra de Tributação</span>
-            <div class="radio-group">
-                <label class="radio-option">
-                    <input type="radio" name="tax_regime" value="2025" checked>
-                    <span>Regra vigente (até DEZ/2025)</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="tax_regime" value="2026">
-                    <span>Regra a partir JAN/2026 (MP 1.303/2025)</span>
-                </label>
-            </div>
-        </div>
         <div class="options-grid">
             <label class="checkbox-label">
                 <input type="checkbox" id="incluir_ir" checked>
@@ -155,6 +142,7 @@
             </label>
         </div>
     </div>
+
 
     <!-- Botão Calcular -->
     <div class="calculate-button-container">
@@ -186,30 +174,7 @@
 
 {% block extra_css %}
 <style>
-.form-subgroup {
-    margin-bottom: 1.5rem;
-}
 
-.radio-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 0.75rem;
-}
-
-.radio-option {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--color-bg-light);
-    padding: 0.75rem 1rem;
-    border-radius: 6px;
-    border: 1px solid var(--color-border);
-}
-
-.radio-option input[type="radio"] {
-    transform: scale(1.1);
-}
 
 .shared-parameters {
     margin-bottom: 2rem;

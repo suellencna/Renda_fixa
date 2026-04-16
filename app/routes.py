@@ -287,11 +287,14 @@ def api_calculate():
         meses = int(data['meses'])
         incluir_ir = data.get('incluir_ir', True)
         ajustar_inflacao = data.get('ajustar_inflacao', True)
-        tax_regime = data.get('tax_regime', '2025')
-        
-        if tax_regime not in ['2025', '2026']:
-            return jsonify({'error': 'Regime tributário inválido. Use "2025" ou "2026".'}), 400
-        
+        # REMOVE ESTAS LINHAS:
+        # tax_regime = data.get('tax_regime', '2025')
+        # if tax_regime not in ['2025', '2026']:
+        #     return jsonify({'error': 'Regime tributário inválido. Use "2025" ou "2026".'}), 400
+
+        # SUBSTITUI POR:
+        tax_regime = 'vigente'
+
         # Validações básicas
         if valor_inicial <= 0:
             return jsonify({'error': 'Valor inicial deve ser maior que zero'}), 400
@@ -369,33 +372,30 @@ def api_focus():
         }
     })
 
+
 @main_bp.route('/api/simular-renda-fixa', methods=['POST'])
 @login_required
 def api_simular_renda_fixa():
     """API para simular múltiplas aplicações de renda fixa de uma vez."""
     try:
         data = request.get_json()
-        
+
         required_fields = ['valor_inicial', 'meses', 'parametros']
         for field in required_fields:
             if field not in data:
                 return jsonify({'error': f'Campo obrigatório faltando: {field}'}), 400
-        
+
         valor_inicial = float(data['valor_inicial'])
         aportes_mensais = float(data.get('aportes_mensais', 0.0))
         meses = int(data['meses'])
         parametros = data.get('parametros', {})
         incluir_ir = data.get('incluir_ir', True)
         ajustar_inflacao = data.get('ajustar_inflacao', True)
-        tax_regime = data.get('tax_regime', '2025')
-        
-        if valor_inicial <= 0:
-            return jsonify({'error': 'Valor inicial deve ser maior que zero'}), 400
+        tax_regime = 'vigente'
+
         if meses <= 0:
             return jsonify({'error': 'Prazo deve ser maior que zero'}), 400
-        if tax_regime not in ['2025', '2026']:
-            return jsonify({'error': 'Regime tributário inválido. Use "2025" ou "2026".'}), 400
-        
+
         resultados = simular_investimentos_padrao(
             valor_inicial=valor_inicial,
             aportes_mensais=aportes_mensais,
@@ -405,9 +405,9 @@ def api_simular_renda_fixa():
             ajustar_inflacao_flag=ajustar_inflacao,
             tax_regime=tax_regime
         )
-        
+
         return jsonify({'resultados': resultados})
-    
+
     except Exception as exc:
         return jsonify({'error': f'Erro ao calcular: {str(exc)}'}), 500
 

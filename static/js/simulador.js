@@ -47,8 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function obterTaxRegime() {
-        const selecionado = document.querySelector('input[name="tax-regime"]:checked');
-        return selecionado ? selecionado.value : '2025';
+        const selecionado = document.querySelector('input[name="tax-regime"]');
+        return selecionado ? selecionado.value : 'vigente';
     }
     
     function montarPayload() {
