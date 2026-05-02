@@ -756,6 +756,87 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
+/* ============================================
+   IDENTIDADE INVESTIR É REALIZAR
+   ============================================ */
+
+.logo-link {
+    text-decoration: none;
+    color: inherit;
+    display: inline-block;
+    transition: opacity 0.2s ease;
+}
+
+.logo-link:hover {
+    opacity: 0.85;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.logo-img {
+    height: 52px;
+    width: auto;
+    display: block;
+}
+
+.logo-text-wrapper {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.logo-text {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--color-title, #0033a0);
+    letter-spacing: -0.01em;
+}
+
+.logo-tagline {
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--color-text-secondary, #6b7280);
+    letter-spacing: 0.02em;
+    margin-top: 2px;
+}
+
+.logo-tagline strong {
+    color: var(--color-title, #0033a0);
+    font-weight: 600;
+}
+
+.footer-link-brand {
+    font-weight: 600;
+    color: var(--color-title, #0033a0);
+}
+
+.footer-link-brand:hover {
+    text-decoration: underline;
+}
+
+/* Responsivo - telas pequenas */
+@media (max-width: 768px) {
+    .logo-img {
+        height: 42px;
+    }
+    .logo-text {
+        font-size: 1.05rem;
+    }
+    .logo-tagline {
+        font-size: 0.65rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-tagline {
+        display: none; /* esconde tagline em telas muito pequenas */
+    }
+}
 
 
 
