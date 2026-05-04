@@ -228,6 +228,69 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+/* ============================================
+   MENU HAMBÚRGUER MOBILE
+   ============================================ */
+(function () {
+    'use strict';
+
+    const toggle = document.getElementById('nav-toggle');
+    const nav = document.getElementById('main-nav');
+    const backdrop = document.getElementById('nav-backdrop');
+
+    if (!toggle || !nav) return;
+
+    function abrirMenu() {
+        nav.classList.add('is-open');
+        if (backdrop) backdrop.classList.add('is-open');
+        document.body.classList.add('nav-open');
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.setAttribute('aria-label', 'Fechar menu');
+    }
+
+    function fecharMenu() {
+        nav.classList.remove('is-open');
+        if (backdrop) backdrop.classList.remove('is-open');
+        document.body.classList.remove('nav-open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Abrir menu');
+    }
+
+    function alternarMenu() {
+        const aberto = nav.classList.contains('is-open');
+        if (aberto) fecharMenu();
+        else abrirMenu();
+    }
+
+    // Clique no botão
+    toggle.addEventListener('click', alternarMenu);
+
+    // Clique no backdrop fecha
+    if (backdrop) backdrop.addEventListener('click', fecharMenu);
+
+    // Clique em qualquer link do menu fecha (boa UX no mobile)
+    nav.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', fecharMenu);
+    });
+
+    // ESC fecha
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && nav.classList.contains('is-open')) {
+            fecharMenu();
+        }
+    });
+
+    // Se redimensionar pra desktop, fecha o menu
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            if (window.innerWidth > 900 && nav.classList.contains('is-open')) {
+                fecharMenu();
+            }
+        }, 150);
+    });
+})();
 
 
 

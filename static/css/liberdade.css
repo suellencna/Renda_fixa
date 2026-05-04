@@ -1,0 +1,308 @@
+/* ============================================
+   CALCULADORA LIBERDADE FINANCEIRA
+   Estilos específicos — herda variáveis do style.css
+   ============================================ */
+
+/* ============ HERO ============ */
+.lib-hero {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 2rem;
+}
+
+.lib-title {
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    line-height: 1.2;
+}
+
+.lib-title span {
+    background: linear-gradient(180deg, transparent 60%, var(--color-accent) 60%);
+    padding: 0 0.2em;
+}
+
+/* ============ CENÁRIOS ============ */
+.scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.85rem;
+    margin-top: 1rem;
+}
+
+.scenario-option {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1.1rem;
+    background: var(--color-surface);
+    border: 2px solid rgba(0, 51, 160, 0.1);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-card);
+}
+
+.scenario-option:hover {
+    border-color: var(--color-title);
+    transform: translateY(-2px);
+}
+
+.scenario-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.scenario-option:has(input:checked) {
+    border-color: var(--color-title);
+    background: rgba(216, 243, 224, 0.4);
+    box-shadow: 0 0 0 4px rgba(255, 211, 0, 0.25);
+}
+
+.scenario-emoji {
+    font-size: 1.6rem;
+}
+
+.scenario-title {
+    font-weight: 700;
+    color: var(--color-title);
+    font-size: 1rem;
+}
+
+.scenario-title em {
+    font-style: normal;
+    font-size: 0.72rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    margin-left: 0.3rem;
+}
+
+.scenario-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+}
+
+.scenario-rate {
+    font-size: 0.8rem;
+    color: var(--color-title);
+    font-weight: 600;
+    margin-top: auto;
+    padding-top: 0.3rem;
+}
+
+/* ============ GRID DE CAMPOS ============ */
+.lib-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+}
+
+/* ============ AVANÇADAS (details) ============ */
+.lib-advanced {
+    margin-top: 1.5rem;
+}
+
+.lib-advanced summary {
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.lib-advanced summary::-webkit-details-marker {
+    display: none;
+}
+
+.lib-advanced summary::after {
+    content: "▾";
+    font-size: 1rem;
+    color: var(--color-title);
+    transition: transform 0.2s ease;
+}
+
+.lib-advanced[open] summary::after {
+    transform: rotate(180deg);
+}
+
+.lib-advanced summary h3 {
+    margin: 0;
+}
+
+/* ============ DESTAQUES DO RESULTADO ============ */
+.lib-headline-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.lib-headline {
+    border-radius: 22px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    color: #ffffff;
+    box-shadow: var(--shadow-soft);
+}
+
+.lib-headline-azul {
+    background: linear-gradient(135deg, var(--color-title) 0%, #254bc9 100%);
+}
+
+.lib-headline-verde {
+    background: linear-gradient(135deg, #2a9d6a 0%, var(--color-success) 100%);
+}
+
+.lib-headline-label {
+    display: block;
+    font-size: 0.95rem;
+    opacity: 0.95;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.lib-headline-value {
+    display: block;
+    font-size: clamp(1.7rem, 4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0.25rem 0;
+}
+
+.lib-headline-note {
+    display: block;
+    font-size: 0.85rem;
+    opacity: 0.92;
+    margin-top: 0.4rem;
+}
+
+/* ============ GRÁFICO ============ */
+.lib-chart-card {
+    background: var(--color-surface);
+    border: 1px solid rgba(0, 51, 160, 0.08);
+    border-radius: 22px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    box-shadow: var(--shadow-card);
+}
+
+.lib-chart-card h4 {
+    margin-bottom: 1rem;
+    font-size: 1.15rem;
+}
+
+/* ============ E SE EU AJUSTAR ============ */
+.lib-adjust {
+    background: rgba(216, 243, 224, 0.55);
+    border: 1px solid rgba(58, 185, 122, 0.25);
+    border-radius: 22px;
+    padding: 1.75rem;
+    margin: 1.5rem 0;
+}
+
+.lib-adjust h3 {
+    margin: 0 0 1.2rem;
+    font-size: 1.2rem;
+}
+
+.lib-adjust-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.85rem;
+}
+
+.lib-adjust-card {
+    background: var(--color-surface);
+    border-radius: 14px;
+    padding: 1.1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    box-shadow: var(--shadow-card);
+}
+
+.lib-adjust-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.lib-adjust-card p {
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--color-text-primary);
+    line-height: 1.5;
+}
+
+.lib-adjust-card strong {
+    color: var(--color-title);
+}
+
+/* ============ DISCLAIMER ============ */
+.lib-disclaimer {
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    margin: 1rem auto 0;
+    max-width: 720px;
+    font-style: italic;
+}
+
+/* ============ STATUS ============ */
+.lib-status-ok {
+    color: #d8f3e0 !important;
+    font-weight: 600;
+}
+
+.lib-status-fail {
+    color: var(--color-accent) !important;
+    font-weight: 600;
+}
+
+/* ============ RESPONSIVO ============ */
+@media (max-width: 700px) {
+    .lib-headline-grid {
+        grid-template-columns: 1fr;
+    }
+    .lib-headline {
+        padding: 1.5rem 1.25rem;
+    }
+}
+
+/* ============ AVISO IR ============ */
+.lib-ir-note {
+    display: block;
+    margin-top: 0.85rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.78rem;
+    line-height: 1.4;
+    opacity: 0.95;
+}
+
+.lib-ir-note a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.lib-ir-note a:hover {
+    opacity: 0.85;
+}
+
+/* esconder o aviso quando IR já está aplicado */
+.lib-ir-note.lib-ir-applied {
+    display: none;
+}
+
+/* ============ SELECT (combinar com .form-input) ============ */
+select.form-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230033a0' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+    cursor: pointer;
+}

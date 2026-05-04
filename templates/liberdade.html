@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}Calculadora Liberdade Financeira | Investir é Realizar{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/liberdade.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <!-- HERO -->
+    <div class="page-header lib-hero">
+        <h2 class="lib-title">Quando você quer ter <span>liberdade</span>?</h2>
+        <p class="page-subtitle">
+            Liberdade pra escolher se trabalha, viajar, descansar.
+            Vamos descobrir juntas quanto você precisa — e quando chega lá.
+        </p>
+    </div>
+
+    <!-- FORMULÁRIO -->
+    <form id="lib-form" autocomplete="off" class="comparison-container">
+
+        <!-- CENÁRIOS -->
+        <div class="calculation-options">
+            <h3>Qual cenário você quer simular?</h3>
+            <div class="scenario-grid">
+                <label class="scenario-option">
+                    <input type="radio" name="cenario" value="4">
+                    <span class="scenario-emoji">🌱</span>
+                    <span class="scenario-title">Cauteloso</span>
+                    <span class="scenario-desc">Se os juros caírem e a economia desacelerar</span>
+                    <span class="scenario-rate">4% a.a. real</span>
+                </label>
+
+                <label class="scenario-option">
+                    <input type="radio" name="cenario" value="7" checked>
+                    <span class="scenario-emoji">⚖️</span>
+                    <span class="scenario-title">Realista <em>⭐ padrão</em></span>
+                    <span class="scenario-desc">Anos bons e ruins se equilibram no longo prazo</span>
+                    <span class="scenario-rate">7% a.a. real</span>
+                </label>
+
+                <label class="scenario-option">
+                    <input type="radio" name="cenario" value="10">
+                    <span class="scenario-emoji">🚀</span>
+                    <span class="scenario-title">Otimista</span>
+                    <span class="scenario-desc">Se tudo correr muito bem nos investimentos</span>
+                    <span class="scenario-rate">10% a.a. real</span>
+                </label>
+
+                <label class="scenario-option">
+                    <input type="radio" name="cenario" value="custom">
+                    <span class="scenario-emoji">⚙️</span>
+                    <span class="scenario-title">Personalizar</span>
+                    <span class="scenario-desc">Quero definir minha própria taxa</span>
+                    <span class="scenario-rate">você escolhe</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- DADOS PESSOAIS -->
+        <div class="investment-card">
+            <h3 class="card-title">Sobre você</h3>
+
+            <div class="lib-fields-grid">
+                <div class="form-group">
+                    <label class="form-label" for="idade-atual">Sua idade hoje</label>
+                    <input type="number" id="idade-atual" class="form-input" min="16" max="90" value="30" required>
+                    <small class="form-help">Quantos anos você tem agora.</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="idade-liberdade">Com que idade você quer ter liberdade?</label>
+                    <input type="number" id="idade-liberdade" class="form-input" min="20" max="100" value="55" required>
+                    <small class="form-help">Liberdade pra escolher se trabalha ou não.</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="renda-desejada">Quanto você quer receber por mês nessa fase?</label>
+                    <input type="text" id="renda-desejada" class="form-input" inputmode="numeric" value="R$ 10.000" required>
+                    <small class="form-help">Em valores de hoje. Pense no padrão de vida que você quer.</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="aporte-mensal">Quanto consegue guardar por mês?</label>
+                    <input type="text" id="aporte-mensal" class="form-input" inputmode="numeric" value="R$ 1.500" required>
+                    <small class="form-help">Não precisa ser muito. Constância vale mais que valor.</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="patrimonio-atual">Quanto você já tem investido hoje?</label>
+                    <input type="text" id="patrimonio-atual" class="form-input" inputmode="numeric" value="R$ 0">
+                    <small class="form-help">Se ainda não tem nada, deixa zerado. Sem culpa.</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- AVANÇADAS -->
+        <details class="calculation-options lib-advanced">
+            <summary>
+                <h3 style="display:inline">⚙️ Configurações avançadas <span class="optional">(opcional)</span></h3>
+            </summary>
+
+            <div class="lib-fields-grid" style="margin-top: 1.2rem;">
+                <div class="form-group" id="custom-rate-wrapper" hidden>
+                    <label class="form-label" for="rentabilidade-custom">Rentabilidade real desejada (% a.a.)</label>
+                    <input type="number" id="rentabilidade-custom" class="form-input" step="0.1" min="0" max="20" value="7">
+                    <small class="form-help">Já descontada a inflação. Aparece quando você escolhe "Personalizar".</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="expectativa-vida">Até que idade quer que o dinheiro dure?</label>
+                    <input type="number" id="expectativa-vida" class="form-input" min="60" max="120" value="90">
+                    <small class="form-help">Quanto mais tempo, maior o patrimônio necessário.</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="inflacao">Inflação esperada (% a.a.)</label>
+                    <input type="number" id="inflacao" class="form-input" step="0.1" min="0" max="20" value="4">
+                    <small class="form-help">Histórico do Brasil fica entre 4% e 6%.</small>
+                </div>
+
+                <!-- IR -->
+                <div class="form-group">
+                    <label class="form-label" for="ir-modo">Imposto de Renda sobre rendimentos</label>
+                    <select id="ir-modo" class="form-input">
+                        <option value="bruto" selected>Não considerar (valor bruto)</option>
+                        <option value="15">15% — padrão (CDB, Tesouro longo prazo)</option>
+                        <option value="isento">Isento (LCI, LCA, debêntures incentivadas)</option>
+                        <option value="custom">Personalizar alíquota</option>
+                    </select>
+                    <small class="form-help">A alíquota depende do produto onde você investe.</small>
+                </div>
+
+                <div class="form-group" id="ir-custom-wrapper" hidden>
+                    <label class="form-label" for="ir-custom">Sua alíquota de IR (%)</label>
+                    <input type="number" id="ir-custom" class="form-input" step="0.5" min="0" max="35" value="15">
+                    <small class="form-help">Tabela regressiva vai de 22,5% (até 6 meses) a 15% (acima de 2 anos).</small>
+                </div>
+            </div>
+        </details>
+
+
+
+    </form>
+
+    <!-- RESULTADO -->
+    <section class="results-container" id="lib-result" aria-live="polite">
+
+        <h3 class="results-title">Sua jornada até a liberdade</h3>
+
+        <!-- DESTAQUES PRINCIPAIS -->
+        <div class="lib-headline-grid">
+            <div class="lib-headline lib-headline-azul">
+                <span class="lib-headline-label">💰 Você precisa acumular</span>
+                <strong class="lib-headline-value" id="result-patrimonio">R$ 0</strong>
+                <small class="lib-headline-note">em valores de hoje</small>
+                <small class="lib-ir-note" id="ir-note">
+                    ⚠️ Cálculo bruto, sem descontar IR.
+                    <a href="#" id="ir-link">Ajustar nas opções avançadas</a>
+                </small>
+            </div>
+
+            <div class="lib-headline lib-headline-verde">
+                <span class="lib-headline-label">📅 Você chega lá</span>
+                <strong class="lib-headline-value" id="result-idade">--</strong>
+                <small class="lib-headline-note" id="result-status">simulando...</small>
+            </div>
+        </div>
+
+
+        <!-- MINI CARDS -->
+        <div class="results-grid-2">
+            <div class="result-card">
+                <h4>Aporte mensal ideal</h4>
+                <div class="result-content">
+                    <div class="result-item">
+                        <span class="result-label">Pra chegar na idade desejada</span>
+                        <span class="result-value" id="result-aporte-ideal">R$ 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-card">
+                <h4>Patrimônio projetado</h4>
+                <div class="result-content">
+                    <div class="result-item">
+                        <span class="result-label">Na idade da sua liberdade</span>
+                        <span class="result-value" id="result-projetado">R$ 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRÁFICO -->
+        <div class="lib-chart-card">
+            <h4>📈 Evolução do seu patrimônio</h4>
+            <canvas id="lib-chart" height="120"></canvas>
+        </div>
+
+        <!-- E SE EU AJUSTAR -->
+        <div class="lib-adjust">
+            <h3>🎯 E se você ajustar?</h3>
+            <div class="lib-adjust-grid">
+                <div class="lib-adjust-card">
+                    <span class="lib-adjust-icon">⏳</span>
+                    <p id="text-adiar">—</p>
+                </div>
+                <div class="lib-adjust-card">
+                    <span class="lib-adjust-icon">📈</span>
+                    <p id="text-aumentar">—</p>
+                </div>
+                <div class="lib-adjust-card">
+                    <span class="lib-adjust-icon">✂️</span>
+                    <p id="text-reduzir">—</p>
+                </div>
+            </div>
+        </div>
+
+        <p class="lib-disclaimer">
+            Esta é uma simulação educativa. Rentabilidades passadas não garantem resultados futuros.
+            Consulte sempre um profissional certificado antes de decisões de investimento.
+        </p>
+    </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/liberdade.js') }}"></script>
+{% endblock %}

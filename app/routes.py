@@ -103,6 +103,12 @@ def dashboard():
     focus_pdf = _get_latest_focus_pdf()
     return render_template('dashboard.html', focus_data=focus_data, focus_pdf=focus_pdf)
 
+@main_bp.route('/liberdade')
+@login_required
+def liberdade():
+    """Calculadora de Liberdade Financeira."""
+    return render_template('liberdade.html')
+
 @main_bp.route('/simulador-renda-fixa')
 @login_required
 def simulador_renda_fixa():

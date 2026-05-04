@@ -26,11 +26,26 @@
                         </div>
                     </div>
                 </a>
-                <nav class="nav">
+
+                <!-- Botão hambúrguer (só aparece no mobile) -->
+                <button
+                    type="button"
+                    class="nav-toggle"
+                    id="nav-toggle"
+                    aria-label="Abrir menu"
+                    aria-expanded="false"
+                    aria-controls="main-nav">
+                    <span class="nav-toggle-bar"></span>
+                    <span class="nav-toggle-bar"></span>
+                    <span class="nav-toggle-bar"></span>
+                </button>
+
+                <nav class="nav" id="main-nav">
                     {% if current_user.is_authenticated %}
                         <a href="{{ url_for('main.index') }}" class="nav-link">Compare 2 ativos</a>
                         <a href="{{ url_for('main.compare_multi') }}" class="nav-link">Compare até 5 ativos</a>
                         <a href="{{ url_for('main.simulador_renda_fixa') }}" class="nav-link">Simulador inteligente</a>
+                        <a href="{{ url_for('main.liberdade') }}" class="nav-link">🎯 Liberdade Financeira</a>
                         <a href="{{ url_for('main.disclaimer') }}" class="nav-link">Disclaimer</a>
                         <a href="{{ url_for('auth.logout') }}" class="nav-link nav-link-logout">Sair</a>
                     {% else %}
@@ -38,9 +53,13 @@
                         <a href="{{ url_for('main.disclaimer') }}" class="nav-link">Disclaimer</a>
                     {% endif %}
                 </nav>
+
+                <!-- Backdrop pra fechar menu clicando fora -->
+                <div class="nav-backdrop" id="nav-backdrop"></div>
             </div>
         </div>
     </header>
+
 
     <main class="main">
         <div class="container">
