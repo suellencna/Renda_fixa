@@ -188,6 +188,9 @@
         $('result-projetado').textContent = formatBRL(patrimProjetado);
         $('result-aporte-ideal').textContent = formatBRL(aporteIdeal);
 
+        document.getElementById('label-projetado').textContent =
+            'Na idade que você escolheu (${i.idadeLiberdade} anos)';
+
         // ===== AVISO IR =====
         atualizarAvisoIR(i);
 
@@ -288,7 +291,7 @@
                         pointHoverRadius: 6
                     },
                     {
-                        label: 'Patrimônio necessário (meta: ${i.idadeLiberdade} anos)',
+                        label: 'Patrimônio necessário',
                         data: dadosAlvo,
                         borderColor: '#ffd300',
                         backgroundColor: 'transparent',
