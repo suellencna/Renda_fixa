@@ -288,7 +288,7 @@
                         pointHoverRadius: 6
                     },
                     {
-                        label: 'Patrimônio necessário',
+                        label: 'Patrimônio necessário (meta: ${i.idadeLiberdade} anos)',
                         data: dadosAlvo,
                         borderColor: '#ffd300',
                         backgroundColor: 'transparent',

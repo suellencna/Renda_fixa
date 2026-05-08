@@ -192,6 +192,20 @@
     margin-bottom: 1rem;
     font-size: 1.15rem;
 }
+/* Container do gráfico */
+.chart-container {
+    position: relative;
+    height: 320px;        /* altura fixa máxima */
+    max-height: 320px;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Canvas do Chart.js */
+.chart-container canvas {
+    max-height: 320px !important;
+}
+
 
 /* ============ E SE EU AJUSTAR ============ */
 .lib-adjust {
