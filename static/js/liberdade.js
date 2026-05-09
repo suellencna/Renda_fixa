@@ -189,7 +189,8 @@
         $('result-aporte-ideal').textContent = formatBRL(aporteIdeal);
 
         document.getElementById('label-projetado').textContent =
-            'Na idade que você escolheu (${i.idadeLiberdade} anos)';
+            `Na idade que você escolheu (${i.idadeLiberdade} anos)`;
+
 
         // ===== AVISO IR =====
         atualizarAvisoIR(i);
