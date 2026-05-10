@@ -190,8 +190,7 @@
 
         document.getElementById('label-projetado').textContent =
             `Para chegar lá na idade que você escolheu (${i.idadeLiberdade} anos)`;
-        document.getElementById('label-aporte-ideal').textContent =
-            `Na idade que você escolheu (${i.idadeLiberdade} anos)`;
+
 
 
         // ===== AVISO IR =====
