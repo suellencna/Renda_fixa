@@ -190,7 +190,8 @@
 
         document.getElementById('label-projetado').textContent =
             `Para chegar lá na idade que você escolheu (${i.idadeLiberdade} anos)`;
-
+        document.getElementById('label-projetado-patrimonio').textContent =
+            `Aos ${i.idadeLiberdade} anos`;
 
 
         // ===== AVISO IR =====
