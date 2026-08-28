@@ -1,0 +1,63 @@
+# .github/workflows/update-rates.yml
+#
+# Atualiza automaticamente as taxas do comparador de renda fixa.
+# Roda diariamente às 10:00 UTC (07:00 BRT) e também pode ser
+# acionado manualmente pelo botão "Run workflow" no GitHub.
+#
+# Se as taxas mudaram, faz commit e push automático.
+# O Railway detecta o push e faz redeploy com os valores novos.
+
+name: Atualizar Taxas
+
+on:
+  schedule:
+    # Todos os dias às 10:00 UTC (07:00 BRT)
+    - cron: '0 10 * * *'
+  workflow_dispatch:
+    # Permite rodar manualmente pelo GitHub
+
+permissions:
+  contents: write
+
+jobs:
+  update-rates:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependências
+        run: pip install requests
+
+      - name: Executar atualização de taxas
+        run: python scripts/update_rates.py --force --verbose
+
+      - name: Verificar se houve mudança
+        id: check
+        run: |
+          if git diff --quiet data/taxas.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Nenhuma mudança nas taxas."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Taxas atualizadas!"
+            git diff data/taxas.json
+          fi
+
+      - name: Commit e push das taxas atualizadas
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/taxas.json data/taxas.log
+          git commit -m "chore: atualizar taxas $(date +'%Y-%m-%d')
+
+          Atualização automática via GitHub Actions.
+          Fontes: BCB SGS + Tesouro Direto."
+          git push
