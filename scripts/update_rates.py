@@ -86,11 +86,13 @@ def fetch_all_sgs() -> Dict[str, Optional[float]]:
 
 
 # ---------------------------------------------------------------------------
-# 2. API do Tesouro Direto
+# 2. Tesouro Transparente (CSV público, atualizado diariamente)
 # ---------------------------------------------------------------------------
-TESOURO_API_URL = (
-    "https://www.tesourodireto.com.br/json/br/com/b3/tesourodireto/"
-    "service/api/treasurybondsinfo.json"
+TESOURO_CSV_URL = (
+    "https://www.tesourotransparente.gov.br/ckan/dataset/"
+    "df56aa42-484a-4a59-8184-7676580c81e3/resource/"
+    "796d2059-14e9-44e3-80c9-2d9e30b405c1/download/"
+    "precotaxatesourodireto.csv"
 )
 
 # Nomes parciais para identificar os títulos que nos interessam
@@ -100,17 +102,26 @@ TESOURO_TARGETS = {
     "tesouro_selic_taxa": "Tesouro Selic",
 }
 
-# Vencimentos que NÃO queremos (juros semestrais, etc.)
-TESOURO_EXCLUDE_KEYWORDS = ["com Juros Semestrais"]
+# Palavras que excluem títulos (juros semestrais, renda+, educa+)
+TESOURO_EXCLUDE_KEYWORDS = [
+    "Juros Semestrais", "Renda+", "Educa+", "RendA+",
+]
 
 
 def fetch_tesouro_direto() -> Dict[str, Optional[float]]:
     """
-    Busca taxas dos títulos do Tesouro Direto.
+    Busca taxas dos títulos do Tesouro Direto via CSV do Tesouro
+    Transparente (dados abertos, sem autenticação).
+
+    O CSV tem ~13 MB com todo o histórico. Baixamos e filtramos
+    apenas a data mais recente para extrair as taxas atuais.
 
     Retorna a taxa do título com vencimento mais curto disponível
     para cada tipo (Prefixado, IPCA+, Selic).
     """
+    import csv
+    import io
+
     result: Dict[str, Optional[float]] = {
         "tesouro_prefixado_nominal": None,
         "tesouro_ipca_mais": None,
@@ -118,61 +129,170 @@ def fetch_tesouro_direto() -> Dict[str, Optional[float]]:
     }
 
     try:
+        logging.info("Baixando CSV do Tesouro Transparente...")
         resp = requests.get(
-            TESOURO_API_URL,
-            timeout=REQUEST_TIMEOUT,
+            TESOURO_CSV_URL,
+            timeout=60,  # CSV é grande (~13 MB)
             headers={"User-Agent": "ComparadorAtivos/1.0"},
         )
         resp.raise_for_status()
-        data = resp.json()
-        bonds = data.get("response", {}).get("TrsrBdTradgList", [])
 
-        if not bonds:
-            logging.warning("API Tesouro Direto retornou lista vazia.")
+        # Detecta separador (pode ser ; ou ,)
+        content = resp.content.decode("latin-1")
+        reader = csv.DictReader(
+            io.StringIO(content),
+            delimiter=";" if ";" in content[:500] else ",",
+        )
+
+        # Mapeia colunas (nomes podem variar entre versões do CSV)
+        # Colunas esperadas: Tipo Titulo, Data Venda, Data Vencimento,
+        #   Taxa Compra Manha, Taxa Venda Manha, PU Compra Manha, PU Venda Manha
+        rows = []
+        for row in reader:
+            rows.append(row)
+
+        if not rows:
+            logging.warning("CSV do Tesouro Transparente vazio.")
             return result
 
-        # Agrupa títulos por tipo
+        # Encontra a data mais recente no CSV
+        # Coluna "Data Base" ou "Data Venda" contém a data de referência
+        date_col = None
+        for candidate in ["Data Base", "Data Venda"]:
+            if candidate in rows[0]:
+                date_col = candidate
+                break
+
+        if not date_col:
+            # Tenta encontrar qualquer coluna com "Data" no nome
+            for col in rows[0]:
+                if "Data" in col and "Vencimento" not in col:
+                    date_col = col
+                    break
+
+        if not date_col:
+            logging.warning("Coluna de data não encontrada no CSV.")
+            return result
+
+        # Coluna de taxa de compra
+        taxa_col = None
+        for candidate in ["Taxa Compra Manha", "Taxa Compra Manhã",
+                          "Taxa Compra", "Taxa (% a.a.)"]:
+            if candidate in rows[0]:
+                taxa_col = candidate
+                break
+
+        if not taxa_col:
+            for col in rows[0]:
+                if "Taxa" in col and "Venda" not in col:
+                    taxa_col = col
+                    break
+
+        if not taxa_col:
+            logging.warning("Coluna de taxa não encontrada no CSV.")
+            return result
+
+        # Coluna do nome do título
+        nome_col = None
+        for candidate in ["Tipo Titulo", "Tipo Título", "Nome"]:
+            if candidate in rows[0]:
+                nome_col = candidate
+                break
+
+        if not nome_col:
+            logging.warning("Coluna de nome do título não encontrada.")
+            return result
+
+        # Coluna de vencimento
+        venc_col = None
+        for candidate in ["Data Vencimento", "Vencimento"]:
+            if candidate in rows[0]:
+                venc_col = candidate
+                break
+
+        if not venc_col:
+            logging.warning("Coluna de vencimento não encontrada.")
+            return result
+
+        logging.info(
+            "CSV: %d linhas, colunas: data=%s, taxa=%s, nome=%s, venc=%s",
+            len(rows), date_col, taxa_col, nome_col, venc_col,
+        )
+
+        # Pega as linhas da data mais recente
+        def parse_date(s: str) -> Optional[datetime]:
+            for fmt in ("%d/%m/%Y", "%Y-%m-%d"):
+                try:
+                    return datetime.strptime(s.strip(), fmt)
+                except ValueError:
+                    continue
+            return None
+
+        # Encontra a data mais recente (últimas linhas do CSV)
+        latest_date = None
+        for row in reversed(rows):
+            dt = parse_date(row.get(date_col, ""))
+            if dt:
+                latest_date = dt
+                break
+
+        if not latest_date:
+            logging.warning("Nenhuma data válida encontrada no CSV.")
+            return result
+
+        logging.info("Data mais recente no CSV: %s", latest_date.strftime("%Y-%m-%d"))
+
+        # Filtra apenas registros da data mais recente
+        latest_rows = []
+        for row in rows:
+            dt = parse_date(row.get(date_col, ""))
+            if dt and dt == latest_date:
+                latest_rows.append(row)
+
+        # Agrupa por tipo de título
         grouped: Dict[str, list] = {
             "tesouro_prefixado": [],
             "tesouro_ipca_mais": [],
             "tesouro_selic_taxa": [],
         }
 
-        for bond in bonds:
-            info = bond.get("TrsrBd", {})
-            nome = info.get("nm", "")
-            taxa = info.get("anulInvstmtRate")
-            venc_str = info.get("mtrtyDt", "")
+        now = datetime.now()
+        for row in latest_rows:
+            nome = row.get(nome_col, "")
+            taxa_str = row.get(taxa_col, "").replace(",", ".").strip()
+            venc_str = row.get(venc_col, "")
 
-            # Pula títulos com juros semestrais
-            if any(kw in nome for kw in TESOURO_EXCLUDE_KEYWORDS):
+            if not taxa_str or not nome:
+                continue
+
+            # Pula títulos com juros semestrais e outros exclusos
+            if any(kw.lower() in nome.lower() for kw in TESOURO_EXCLUDE_KEYWORDS):
+                continue
+
+            try:
+                taxa = float(taxa_str)
+            except ValueError:
+                continue
+
+            venc_dt = parse_date(venc_str)
+            if not venc_dt or venc_dt <= now:
                 continue
 
             # Identifica o tipo
             for key, target_name in TESOURO_TARGETS.items():
-                if target_name in nome and taxa is not None:
-                    try:
-                        venc_dt = datetime.strptime(
-                            venc_str[:10], "%Y-%m-%d"
-                        )
-                        grouped[key].append({
-                            "nome": nome,
-                            "taxa": float(taxa),
-                            "vencimento": venc_dt,
-                        })
-                    except (ValueError, TypeError):
-                        pass
+                if target_name.lower() in nome.lower():
+                    grouped[key].append({
+                        "nome": nome,
+                        "taxa": taxa,
+                        "vencimento": venc_dt,
+                    })
 
-        # Para cada tipo, pega o vencimento mais curto disponível
-        now = datetime.now()
+        # Para cada tipo, pega o vencimento mais curto
         for key, bonds_list in grouped.items():
-            # Filtra apenas títulos com vencimento futuro
-            futuros = [b for b in bonds_list if b["vencimento"] > now]
-            if not futuros:
+            if not bonds_list:
                 continue
-            # Ordena por vencimento mais próximo
-            futuros.sort(key=lambda b: b["vencimento"])
-            chosen = futuros[0]
+            bonds_list.sort(key=lambda b: b["vencimento"])
+            chosen = bonds_list[0]
 
             if key == "tesouro_prefixado":
                 result["tesouro_prefixado_nominal"] = chosen["taxa"]
