@@ -228,13 +228,13 @@ def fetch_tesouro_direto() -> Dict[str, Optional[float]]:
                     continue
             return None
 
-        # Encontra a data mais recente (últimas linhas do CSV)
+        # Encontra a data mais recente varrendo TODAS as linhas,
+        # pois o CSV não é ordenado cronologicamente
         latest_date = None
-        for row in reversed(rows):
+        for row in rows:
             dt = parse_date(row.get(date_col, ""))
-            if dt:
+            if dt and (latest_date is None or dt > latest_date):
                 latest_date = dt
-                break
 
         if not latest_date:
             logging.warning("Nenhuma data válida encontrada no CSV.")
