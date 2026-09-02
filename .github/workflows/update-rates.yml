@@ -60,4 +60,5 @@ jobs:
 
           Atualização automática via GitHub Actions.
           Fontes: BCB SGS + Tesouro Transparente."
+          git pull --rebase
           git push
