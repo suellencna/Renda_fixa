@@ -1,5 +1,5 @@
 {
-  "data_atualizacao": "2026-09-06",
+  "data_atualizacao": "2026-09-07",
   "selic_meta": 14.0,
   "cdi_over": 13.9,
   "ipca_12m": 4.44,
@@ -18,6 +18,6 @@
   "fonte": {
     "bcb_sgs": "https://api.bcb.gov.br/dados",
     "tesouro_direto": "https://www.tesourodireto.com.br",
-    "atualizado_em": "2026-09-06T13:28:25"
+    "atualizado_em": "2026-09-07T15:37:23"
   }
 }
