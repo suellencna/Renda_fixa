@@ -1,23 +1,23 @@
 {
-  "data_atualizacao": "2026-10-15",
+  "data_atualizacao": "2026-10-16",
   "selic_meta": 13.75,
   "cdi_over": 13.65,
   "ipca_12m": 4.58,
   "ipca_mensal": 0.82,
-  "tr_mensal": 0.1696,
-  "tesouro_prefixado_nominal": 13.34,
-  "tesouro_ipca_mais": 6.72,
+  "tr_mensal": 0.157,
+  "tesouro_prefixado_nominal": 13.37,
+  "tesouro_ipca_mais": 6.77,
   "tesouro_selic_taxa": 0.01,
   "cdb_100_cdi_bruto_anual": 13.65,
   "cdb_100_cdi_liquido_12m": 11.26,
   "lci_lca_85_cdi": 11.6,
   "fundo_di_liquido": 13.4,
-  "poupanca_mensal": 0.6696,
-  "poupanca_anual_aprox": 8.338,
+  "poupanca_mensal": 0.657,
+  "poupanca_anual_aprox": 8.175,
   "taxa_admin_fundo_di": 0.25,
   "fonte": {
     "bcb_sgs": "https://api.bcb.gov.br/dados",
     "tesouro_direto": "https://www.tesourodireto.com.br",
-    "atualizado_em": "2026-10-15T14:45:49"
+    "atualizado_em": "2026-10-16T14:40:41"
   }
 }
